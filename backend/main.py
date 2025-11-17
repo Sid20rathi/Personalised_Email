@@ -1,14 +1,25 @@
 from fastapi  import FastAPI 
+from fastapi.middleware.cors import CORSMiddleware
 import os
-from route.route import router1
+from route.email import router1
+from route.resume_extraction import router2
 import uvicorn
 
 
 
 
 app = FastAPI()
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 app.include_router(router1,prefix="/generate",tags=["Email Generation"])
+
+app.include_router(router2,prefix="/extraction",tags=["Resume Extraction"])
 
 
 
