@@ -56,13 +56,10 @@ async def upload_file(file: UploadFile):
             "Content-Type": file.content_type,
         }
 
-        print(f" Uploading to: {blob_upload_url}",flush=True)  
-        print(f" Filename: {unique_filename}",flush=True)  
 
         response = requests.put(blob_upload_url, data=file_content, headers=headers)
         
-        print(f" Response status: {response.status_code}",flush=True)  
-        print(f" Response text: {response.text}",flush=True)  
+        
         
         if response.status_code == 200:
             result = response.json()
@@ -82,16 +79,15 @@ async def upload_file(file: UploadFile):
 
 async def extract_resume(file: UploadFile):
     try:
-        # Create a temporary file to save the uploaded content
+   
         with tempfile.NamedTemporaryFile(delete=False, suffix=".pdf") as temp_file:
-            # Read the file content
+           
             file_content = await file.read()
-            # Write to temporary file
             temp_file.write(file_content)
             temp_file_path = temp_file.name
 
         try:
-            # Use the temporary file path with PyPDFLoader
+      
             loader = PyPDFLoader(temp_file_path)
             documents = loader.load()
             full_text = "\n\n".join(doc.page_content for doc in documents)
@@ -100,7 +96,7 @@ async def extract_resume(file: UploadFile):
                 print(f"Error: Could not read text from {file.filename}")
                 return None
 
-            # Initialize LLM
+           
             llm = init_chat_model(
                 "google_genai:gemini-2.5-flash", 
                 api_key=API_KEY
@@ -136,7 +132,7 @@ async def extract_resume(file: UploadFile):
             return None
             
         finally:
-            # Clean up the temporary file
+          
             os.unlink(temp_file_path)
             
     except Exception as e:
@@ -146,11 +142,11 @@ async def extract_resume(file: UploadFile):
         )
 
 
-def adding_resume(full_name: str, experience: str, projects: list, skills: list,user_id:int):
+def adding_resume(full_name: str, experience: str, projects: list, skills: list,clerk_id:str):
     """Insert/update  a new resume record into the database"""
     try:
         with Session(engine) as db:
-            statement = select(ResumeInfo).where(ResumeInfo.user_id == user_id)
+            statement = select(ResumeInfo).where(ResumeInfo.clerk_id == clerk_id)
             results = db.exec(statement).all()
             if results:
                 resume = results[0]
@@ -169,7 +165,7 @@ def adding_resume(full_name: str, experience: str, projects: list, skills: list,
                     experience=experience,
                     projects=projects,
                     skills=skills,
-                    user_id=user_id
+                    clerk_id=clerk_id
                 )
                 db.add(resume)
                 db.commit()

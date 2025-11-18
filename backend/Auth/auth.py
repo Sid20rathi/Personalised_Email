@@ -1,4 +1,11 @@
-from fastapi import HTTPException ,status, Depends ,requests
+import os
+import sys
+from pathlib import Path
+
+project_root = Path(__file__).parent.parent
+sys.path.insert(0, str(project_root))
+
+from fastapi import HTTPException ,status, Depends ,Request
 from clerk_backend_api import Clerk ,AuthenticateRequestOptions
 
 import os 
@@ -9,7 +16,7 @@ load_dotenv()
 clerk_sdk = Clerk(bearer_auth=os.getenv("CLERK_SECRET_KEY"))
 
 
-def authenticate_and_get_user(request):
+def authenticate_and_get_user(request:Request):
     try:
         request_state = clerk_sdk.authenticate_request(
             request,

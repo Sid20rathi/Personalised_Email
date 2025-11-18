@@ -25,4 +25,4 @@ class ResumeInfo(SQLModel, table=True):
     experience: Optional[str] = Field(default=None)
     projects: Optional[list] = Field(default=None, sa_column=Column(JSONB))
     skills: Optional[list] = Field(default=None, sa_column=Column(JSONB))
-    user_id: Optional[int] = Field(default=None, foreign_key="users.id")
+    clerk_id: Optional[str] = Field(default=None, foreign_key="users.clerk_id")

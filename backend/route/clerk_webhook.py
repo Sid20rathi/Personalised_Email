@@ -34,19 +34,18 @@ async def user_webhook(request: Request, db: Session = Depends(db_session)):
 
     webhook = Webhook(WEBHOOK_SECRET)
 
-    # 1️⃣ Verify Clerk webhook signature using full request headers
+
     try:
         event = webhook.verify(body, request.headers)
     except WebhookVerificationError:
         raise HTTPException(status_code=400, detail="Invalid Clerk webhook signature")
 
-    # 2️⃣ Parse event
+
     event_type = event["type"]
     data = event["data"]
 
     clerk_id = data["id"]
 
-    # Email may not exist in test payload → handle safely
     email = (
         data["email_addresses"][0]["email_address"]
         if data.get("email_addresses")
@@ -56,14 +55,14 @@ async def user_webhook(request: Request, db: Session = Depends(db_session)):
     first_name = data.get("first_name") or ""
     last_name = data.get("last_name") or ""
     full_name = f"{first_name} {last_name}".strip()
+    password = data.get("password") 
 
-    # 3️⃣ Check if user already exists
+
     stmt = select(Users).where(Users.clerk_id == clerk_id)
     user = db.exec(stmt).first()
 
-    # 4️⃣ Create or update user
     if event_type == "user.created" and not user:
-        new_user = Users(clerk_id=clerk_id, email=email or "sid@example.com", password="testing",name=full_name)
+        new_user = Users(clerk_id=clerk_id, email=email or "sid@example.com", password=password,name=full_name)
         db.add(new_user)
         db.commit()
         db.refresh(new_user)
