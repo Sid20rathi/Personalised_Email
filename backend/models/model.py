@@ -12,9 +12,11 @@ from sqlalchemy.dialects.postgresql import JSONB
 
 class Users(SQLModel, table=True):
     id: Optional[int] = Field(default=None, primary_key=True, index=True)
+    clerk_id: str = Field(nullable=False, index=True,unique=True)
     name: str = Field(min_length=3, max_length=255)
     email: str = Field(nullable=False, index=True)
     password: str = Field(nullable=False)
+    resume_url : Optional[str] = Field(default=None)
 
 
 class ResumeInfo(SQLModel, table=True):

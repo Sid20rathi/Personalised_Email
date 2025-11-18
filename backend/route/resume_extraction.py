@@ -7,6 +7,9 @@ from langchain.chat_models import init_chat_model
 from pydantic import BaseModel, Field
 from langchain_core.prompts import ChatPromptTemplate
 from pathlib import Path
+from models.model import Users, ResumeInfo
+from config.database import db_session ,engine
+from sqlmodel import Field, Session, SQLModel, create_engine, select
 import tempfile
 import requests
 import uuid
@@ -143,6 +146,77 @@ async def extract_resume(file: UploadFile):
         )
 
 
+def adding_resume(full_name: str, experience: str, projects: list, skills: list,user_id:int):
+    """Insert/update  a new resume record into the database"""
+    try:
+        with Session(engine) as db:
+            statement = select(ResumeInfo).where(ResumeInfo.user_id == user_id)
+            results = db.exec(statement).all()
+            if results:
+                resume = results[0]
+                resume.full_name = full_name
+                resume.experience = experience
+                resume.projects = projects
+                resume.skills = skills
+                db.add(resume)
+                db.commit()
+                db.refresh(resume)
+                print("Resume updated successfully:", resume)
+                return resume
+            else:
+                resume = ResumeInfo(
+                    full_name=full_name,
+                    experience=experience,
+                    projects=projects,
+                    skills=skills,
+                    user_id=user_id
+                )
+                db.add(resume)
+                db.commit()
+                db.refresh(resume)
+                print("Resume added successfully:", resume)
+                return resume
+    except Exception as e:
+        raise HTTPException(
+            status_code=500,
+            detail=f"Failed to add/update resume, Error: {e}"
+        )
+   
+
+def update_resume_url(resume_url:str, email:str):
+    try:
+        with Session(engine) as db:
+            statement = select(Users).where(Users.email == email)
+            results = db.exec(statement).first()
+
+            if results:
+                resume = results
+                resume.resume_url = resume_url
+                db.add(resume)
+                db.commit()
+                db.refresh(resume)
+                print("Resume URL updated successfully:", resume)
+                return resume
+            else:
+                raise HTTPException(
+                    status_code=404,
+                    detail="User not found"
+                )
+
+
+
+
+
+    except Exception as e:
+        raise HTTPException(
+            status_code=500,
+            detail=f"Failed to update resume URL, Error: {e}"
+        )
+
+    
+
+
+
 @router2.post("/resume_upload")
 async def upload_resume(file: UploadFile = File(...)):
     """
@@ -182,6 +256,19 @@ async def upload_resume(file: UploadFile = File(...)):
         file.file = BytesIO(file_content)
         
         resume_data  = await extract_resume(file)
+
+        output =  adding_resume(
+            full_name=resume_data.full_name,
+            experience=resume_data.total_experience_summary,
+            projects=resume_data.projects,
+            skills=resume_data.core_skills,
+            user_id=1
+        )
+
+        resume_output = update_resume_url(
+            resume_url=blob_url,
+            email="siddhant@gmail.com"
+        )
 
         
         
