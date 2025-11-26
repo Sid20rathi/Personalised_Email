@@ -20,6 +20,8 @@ from langchain.prompts import ChatPromptTemplate
 
 
 
+
+
 load_dotenv()
 
 class Email_structure(BaseModel):

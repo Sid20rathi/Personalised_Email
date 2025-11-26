@@ -5,9 +5,11 @@ from pathlib import Path
 project_root = Path(__file__).parent.parent
 sys.path.insert(0, str(project_root))
 
-from fastapi import APIRouter , HTTPException , status
+from fastapi import APIRouter , HTTPException , status ,Depends
 from pydantic import BaseModel , HttpUrl
 from nodes.nodes import graph
+from Auth.auth import Authenticate_user
+
 
 class content_url(BaseModel):
     url : HttpUrl
@@ -23,9 +25,9 @@ def check_health():
 
 
 @router1.post("/email")
-async def email_generation(content_url:content_url):
+async def email_generation(content_url:content_url,user_payload:dict = Depends(Authenticate_user)):
     try:
-        state =  graph.invoke({'url':content_url.url})
+        state =  graph.invoke({'url':content_url.url,"user_id":user_payload.get("id")})
 
         return {"email_subject":state["email_subject"],"email_body":state["email_body"]}
          

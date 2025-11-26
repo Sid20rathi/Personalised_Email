@@ -11,8 +11,7 @@ from sqlalchemy.dialects.postgresql import JSONB
 
 
 class Users(SQLModel, table=True):
-    id: Optional[int] = Field(default=None, primary_key=True, index=True)
-    clerk_id: str = Field(nullable=False, index=True,unique=True)
+    id: Optional[int] = Field(primary_key=True, index=True)
     name: str = Field(min_length=3, max_length=255)
     email: str = Field(nullable=False, index=True)
     password: str = Field(nullable=False)
@@ -25,4 +24,4 @@ class ResumeInfo(SQLModel, table=True):
     experience: Optional[str] = Field(default=None)
     projects: Optional[list] = Field(default=None, sa_column=Column(JSONB))
     skills: Optional[list] = Field(default=None, sa_column=Column(JSONB))
-    clerk_id: Optional[str] = Field(default=None, foreign_key="users.clerk_id")
+    user_id: Optional[int] = Field(default=None, foreign_key="users.id")

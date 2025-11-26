@@ -17,7 +17,9 @@ import uuid
 project_root = Path(__file__).parent.parent
 sys.path.insert(0, str(project_root))
 
-from fastapi import APIRouter, HTTPException, UploadFile, File
+from fastapi import APIRouter, HTTPException, UploadFile, File,Depends
+from Auth.auth import Authenticate_user
+
 
 router2 = APIRouter()
 API_KEY = os.getenv("GOOGLE_API_KEY") 
@@ -142,11 +144,11 @@ async def extract_resume(file: UploadFile):
         )
 
 
-def adding_resume(full_name: str, experience: str, projects: list, skills: list,clerk_id:str):
+def adding_resume(full_name: str, experience: str, projects: list, skills: list,user_id:int):
     """Insert/update  a new resume record into the database"""
     try:
         with Session(engine) as db:
-            statement = select(ResumeInfo).where(ResumeInfo.clerk_id == clerk_id)
+            statement = select(ResumeInfo).where(ResumeInfo.user_id == user_id)
             results = db.exec(statement).all()
             if results:
                 resume = results[0]
@@ -214,7 +216,7 @@ def update_resume_url(resume_url:str, email:str):
 
 
 @router2.post("/resume_upload")
-async def upload_resume(file: UploadFile = File(...)):
+async def upload_resume(file: UploadFile = File(...),user_payload:dict = Depends(Authenticate_user)):
     """
     Upload resume to Vercel Blob and return the URL
     """
@@ -258,12 +260,12 @@ async def upload_resume(file: UploadFile = File(...)):
             experience=resume_data.total_experience_summary,
             projects=resume_data.projects,
             skills=resume_data.core_skills,
-            user_id=1
+            user_id=user_payload.get("id")
         )
 
         resume_output = update_resume_url(
             resume_url=blob_url,
-            email="siddhant@gmail.com"
+            email=user_payload.get("sub")
         )
 
         

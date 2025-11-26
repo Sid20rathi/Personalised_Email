@@ -19,8 +19,8 @@ load_dotenv()
 def get_user_data(state:Graph_state):
 
     with Session(engine) as session:
-        statement = select(ResumeInfo).where(ResumeInfo.user_id == 1)
-        result = session.exec(statement)
+        statement = select(ResumeInfo).where(ResumeInfo.user_id == state["user_id"])
+        result = session.exec(statement).all()
         for resume in result:
            full_name = resume.full_name
            experience = resume.experience

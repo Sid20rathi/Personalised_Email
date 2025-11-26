@@ -13,3 +13,4 @@ class Graph_state(TypedDict):
     projects : List[str]
     email_subject :str
     email_body :str
+    user_id: int

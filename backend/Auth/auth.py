@@ -6,42 +6,25 @@ project_root = Path(__file__).parent.parent
 sys.path.insert(0, str(project_root))
 
 from fastapi import HTTPException ,status, Depends ,Request
-from clerk_backend_api import Clerk ,AuthenticateRequestOptions
+from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
+from utils.helper import verify_token
 
-import os 
+
+
 from dotenv import load_dotenv
 load_dotenv()
 
 
-clerk_sdk = Clerk(bearer_auth=os.getenv("CLERK_SECRET_KEY"))
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="signin")
 
 
-def authenticate_and_get_user(request:Request):
+async def Authenticate_user(token:str = Depends(oauth2_scheme)):
+
     try:
-        request_state = clerk_sdk.authenticate_request(
-            request,
-            AuthenticateRequestOptions(
-                authorized_parties =["http://localhost:3000"],
-                jwt_key=os.getenv("JWT_TOKEN"),
-            )
+        payload = verify_token(token)
+        return payload
+    except HTTPException as e:
+        raise HTTPException(status_code=e.status_code, detail=e.detail)
 
-        )
 
-        if not request_state.is_signed_in:
-            raise HTTPException(
-                status_code=status.HTTP_401_UNAUTHORIZED,
-                detail="Invalid authentication credentials",
-               
-                )
-
-        user_id = request_state.payload.get("sub")
-
-        return {"user_id":user_id}
-
-    except Exception as e:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail=f"Error:{e}",
-       
-            )
 
