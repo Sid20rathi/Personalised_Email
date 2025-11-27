@@ -9,6 +9,7 @@ from fastapi import APIRouter , HTTPException , status ,Depends
 from pydantic import BaseModel , HttpUrl
 from nodes.nodes import graph
 from Auth.auth import Authenticate_user
+from utils.limiter import limiter
 
 
 class content_url(BaseModel):
@@ -20,11 +21,13 @@ router1 = APIRouter()
 
 
 @router1.get("/")
+@limiter.limit("5/minute")
 def check_health():
     return{"message": "Email Generation Agnet is working."}
 
 
 @router1.post("/email")
+@limiter.limit("5/minute")
 async def email_generation(content_url:content_url,user_payload:dict = Depends(Authenticate_user)):
     try:
         state =  graph.invoke({'url':content_url.url,"user_id":user_payload.get("id")})

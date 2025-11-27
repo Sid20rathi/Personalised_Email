@@ -19,6 +19,7 @@ sys.path.insert(0, str(project_root))
 
 from fastapi import APIRouter, HTTPException, UploadFile, File,Depends
 from Auth.auth import Authenticate_user
+from utils.limiter import limiter
 
 
 router2 = APIRouter()
@@ -216,6 +217,7 @@ def update_resume_url(resume_url:str, email:str):
 
 
 @router2.post("/resume_upload")
+@limiter.limit("5/minute")
 async def upload_resume(file: UploadFile = File(...),user_payload:dict = Depends(Authenticate_user)):
     """
     Upload resume to Vercel Blob and return the URL

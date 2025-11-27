@@ -4,6 +4,9 @@ import os
 from route.email import router1
 from route.resume_extraction import router2
 from route.user import router4
+from utils.limiter import limiter
+from slowapi import _rate_limit_exceeded_handler
+from slowapi.errors import RateLimitExceeded
 
 
 import uvicorn
@@ -12,6 +15,12 @@ import uvicorn
 
 
 app = FastAPI()
+
+app.state.limiter = limiter
+
+app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
+
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],  
