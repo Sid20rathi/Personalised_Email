@@ -1,2 +1,11 @@
 .env
 venv
+test.py
+Master_Resume.pdf
+FullStack_Resume.pdf
+
+alembic/versions/*.pyc
+alembic/versions/*.py
+alembic/versions
+alembic/__pycache__/
+env.py
