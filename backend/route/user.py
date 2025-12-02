@@ -5,7 +5,7 @@ from pathlib import Path
 project_root = Path(__file__).parent.parent
 sys.path.insert(0, str(project_root))
 
-from fastapi import HTTPException, status , APIRouter , Depends
+from fastapi import HTTPException, status , APIRouter , Depends ,Request
 from fastapi.security import OAuth2PasswordBearer ,OAuth2PasswordRequestForm
 from models.model import Users, ResumeInfo
 from services.users.helper import create_user , find_user , sign_in
@@ -21,13 +21,13 @@ router4 = APIRouter()
 
 @router4.get("/health")
 @limiter.limit("5/minute")
-def check_health(user_payload:dict = Depends(Authenticate_user)):
+def check_health(request: Request,user_payload:dict = Depends(Authenticate_user)):
     return{"status":"healthy","user":user_payload.get("sub"),"id":user_payload.get("id")}
 
 
 @router4.post("/signup")
 @limiter.limit("5/minute")
-def user_signup(user:Users):
+def user_signup(request: Request,user:Users):
     try:
         present = find_user(user.email)
         if present:
@@ -46,7 +46,7 @@ def user_signup(user:Users):
 
 @router4.post("/signin")
 @limiter.limit("5/minute")
-def user_signin(form_data:OAuth2PasswordRequestForm = Depends()):
+def user_signin(request: Request,form_data:OAuth2PasswordRequestForm = Depends()):
     try:
         user = sign_in(form_data.username, form_data.password)
         if not user:

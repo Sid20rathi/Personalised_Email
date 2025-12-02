@@ -1,4 +1,4 @@
-from fastapi  import FastAPI ,Depends
+from fastapi  import FastAPI ,Depends ,Request
 from fastapi.middleware.cors import CORSMiddleware
 import os
 from route.email import router1
@@ -7,6 +7,7 @@ from route.user import router4
 from utils.limiter import limiter
 from slowapi import _rate_limit_exceeded_handler
 from slowapi.errors import RateLimitExceeded
+
 
 
 import uvicorn
@@ -38,7 +39,7 @@ app.include_router(router4,prefix="/api",tags=["User"])
 
 
 @app.get("/")
-def  health_check():
+def  health_check(request: Request):
     return{"message":"Email generation agent is live"}
 
    
