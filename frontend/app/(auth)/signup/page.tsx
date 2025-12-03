@@ -67,6 +67,7 @@ const onSubmit = async(data:signupformData)=>{
       localStorage.setItem("email_access_token",response.data.access_token)
     }
     reset()
+    router.push("/dashboard")
 
 
 
@@ -84,6 +85,10 @@ const onSubmit = async(data:signupformData)=>{
   }finally{
     setIsLoading(false)
   }
+}
+
+const toSignin =()=>{
+  router.push("/signin")
 }
 
 
@@ -187,6 +192,9 @@ const onSubmit = async(data:signupformData)=>{
               </button>
  
         <div className="my-8 h-[1px] w-full bg-gradient-to-r from-transparent via-neutral-300 to-transparent dark:via-neutral-700" />
+         <div className="text-sm flex items-center justify-center text-black">
+                          Have an account? <span className="text-red-500 font-bold cursor-pointer hover:underline pl-2" onClick={toSignin}>Sign In</span>
+                        </div>
  
        
       </form>

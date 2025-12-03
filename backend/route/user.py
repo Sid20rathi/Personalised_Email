@@ -12,6 +12,7 @@ from services.users.helper import create_user , find_user , sign_in
 from utils.helper import verify_password ,create_access_token ,hash_password
 from Auth.auth import Authenticate_user
 from utils.limiter import limiter
+from utils.validator import Signinform
 
 
 
@@ -46,9 +47,9 @@ def user_signup(request: Request,user:Users):
 
 @router4.post("/signin")
 @limiter.limit("5/minute")
-def user_signin(request: Request,form_data:OAuth2PasswordRequestForm = Depends()):
+def user_signin(request: Request,form_data:Signinform):
     try:
-        user = sign_in(form_data.username, form_data.password)
+        user = sign_in(form_data.email, form_data.password)
         if not user:
             raise HTTPException(status_code=404, detail="User not found")
         return user
