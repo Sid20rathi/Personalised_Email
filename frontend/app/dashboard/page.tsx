@@ -3,6 +3,9 @@
 
 import { useRouter } from "next/navigation"
 import { useState ,useEffect } from "react"
+import { isAuthenticated } from '@/lib/auth';
+import LogoutButton from "@/components/LogutoutButton";
+
 
 export default function Dashboard(){
     const router = useRouter()
@@ -10,14 +13,13 @@ export default function Dashboard(){
     const Apiurl  = process.env.NEXT_PUBLIC_API_URL
     const [accessToken, setAccessToken] = useState<string | null>(null);
 
-    useEffect(() => {
-    const token = localStorage.getItem("email_access_token");
-    setAccessToken(token);
+    useEffect(()=>{
+      if(!isAuthenticated()){
+        router.push("/signin")
+      }
+    })
 
-    if (!token) {
-      router.push("/signin");
-    }
-  }, []);
+
 
 
 
@@ -25,6 +27,8 @@ export default function Dashboard(){
     return(
         <div className="w-full h-screen selection:bg-red-600">
             <h1 className="text-3xl font-bold text-center text-black">Dashboard</h1>
+
+            <LogoutButton />
         </div>
     )
 }

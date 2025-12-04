@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
 import { IconEye, IconEyeClosed } from "@tabler/icons-react";
 import { Label } from "@radix-ui/react-label";
@@ -10,6 +10,7 @@ import { z } from "zod";
 import axios from "axios";
 import { toast, Toaster } from "react-hot-toast"; 
 import { useRouter } from "next/navigation"
+import { isAuthenticated, setAuth } from "@/lib/auth";
 
 const signup_schema = z.object({
   name: z.string().min(2,"full name must be at least 2 characters").max(50,"full name must be at most 50 characters").regex(/^[a-zA-Z\s]+$/, "Full name can only contain letters and spaces"),
@@ -35,6 +36,12 @@ export default function Signup() {
   const [isLoading, setIsLoading] = useState(false);
   const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
   const router = useRouter()
+
+  useEffect(()=>{
+        if(isAuthenticated()){
+          router.push("/dashboard")
+        }
+      },[router])
 
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
@@ -64,7 +71,7 @@ const onSubmit = async(data:signupformData)=>{
     toast.success("Account created successfully!");
 
     if(response.data.access_token){
-      localStorage.setItem("email_access_token",response.data.access_token)
+     setAuth(response.data.access_token)
     }
     reset()
     router.push("/dashboard")

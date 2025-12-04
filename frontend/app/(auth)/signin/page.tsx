@@ -1,5 +1,5 @@
 "use client"
-import React, { useState } from "react";
+import React, { useState ,useEffect } from "react";
 import { cn } from "@/lib/utils";
 import { IconEye, IconEyeClosed } from "@tabler/icons-react";
 import { Label } from "@radix-ui/react-label";
@@ -10,6 +10,7 @@ import { z } from "zod";
 import axios from "axios";
 import { toast, Toaster } from "react-hot-toast"; 
 import { useRouter } from "next/navigation"
+import { isAuthenticated, setAuth } from "@/lib/auth";
 
 
 const signinSchema = z.object({
@@ -29,6 +30,12 @@ export default function Signin(){
     const[loading,setLoading]=useState(false)
     const [showPassword, setShowPassword] = useState(false);
     const Apiurl  = process.env.NEXT_PUBLIC_API_URL
+    
+    useEffect(()=>{
+      if(isAuthenticated()){
+        router.push("/dashboard")
+      }
+    },[router])
 
 
 
@@ -60,8 +67,8 @@ export default function Signin(){
             toast.success("Signed In successfully!");
 
             if(response.data.access_token){
-      localStorage.setItem("email_access_token",response.data.access_token)
-    }
+                setAuth(response.data.access_token)
+            }
        reset()
     router.push("/dashboard")
 
