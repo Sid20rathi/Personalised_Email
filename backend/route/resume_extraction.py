@@ -118,7 +118,7 @@ async def extract_resume(file: UploadFile):
             
             structured_extractor = extraction_prompt | llm.with_structured_output(ResumeProfile)
 
-            print(f"Sending {len(full_text)} characters of text to the LLM for structured extraction...")
+           
             
             parsed_data: ResumeProfile = structured_extractor.invoke({"resume_text": full_text})
             
@@ -168,7 +168,7 @@ def adding_resume(full_name: str, experience: str, projects: list, skills: list,
                     experience=experience,
                     projects=projects,
                     skills=skills,
-                    clerk_id=clerk_id
+                    user_id=user_id
                 )
                 db.add(resume)
                 db.commit()
@@ -256,6 +256,7 @@ async def upload_resume(request: Request,file: UploadFile = File(...),user_paylo
         file.file = BytesIO(file_content)
         
         resume_data  = await extract_resume(file)
+        print("-------Resume Data Extracted-------",flush=True)
 
         output =  adding_resume(
             full_name=resume_data.full_name,
@@ -265,10 +266,13 @@ async def upload_resume(request: Request,file: UploadFile = File(...),user_paylo
             user_id=user_payload.get("id")
         )
 
+        print("-------Resume Data Added-------",flush=True)
+
         resume_output = update_resume_url(
             resume_url=blob_url,
             email=user_payload.get("sub")
         )
+        print("-------Resume URL Updated-------",flush=True)
 
         
         
@@ -285,3 +289,22 @@ async def upload_resume(request: Request,file: UploadFile = File(...),user_paylo
             detail=f"Failed to process upload: {str(e)}"
         )
 
+
+@router2.get("/resume")
+@limiter.limit("5/minute")
+def get_resume(request: Request,user_payload:dict = Depends(Authenticate_user)):
+    try:
+        with Session(engine) as db:
+            statement = select(Users).where(Users.email == user_payload.get("sub"))
+            results = db.exec(statement).first()
+            if results:
+                return results.resume_url
+            else:
+                return None
+              
+           
+    except Exception as e:
+        raise HTTPException(
+            status_code=500,
+            detail=f"Failed to get resume, Error: {e}"
+        )

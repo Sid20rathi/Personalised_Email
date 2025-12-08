@@ -19,6 +19,7 @@ import { logout } from '@/lib/auth'
 import EmailSection from "@/components/Email";
 import ResumeSection from "@/components/Resume";
 import DashboardHome from "@/components/Dashboard";
+import axios from "axios";
 
 type ActiveComponent = "home"|"email"|"resume"
 
@@ -28,7 +29,43 @@ export default function DashboardPage(){
     const[loading,setLoading]=useState(false)
     const Apiurl  = process.env.NEXT_PUBLIC_API_URL
     const [accessToken, setAccessToken] = useState<string | null>(null);
-     const [activeComponent, setActiveComponent] = useState<ActiveComponent>('home');
+    const [activeComponent, setActiveComponent] = useState<ActiveComponent>('home');
+    const [resumeUrl, setResumeUrl] = useState<string | null>(null)
+    const[resumeLoading,setResumeLoading]=useState<boolean>(false)
+  
+  useEffect(()=>{
+    const fetchResume = async()=>{
+      try{
+        setResumeLoading(true)
+        const full_token = localStorage.getItem("email_access_token")
+        if(!full_token){
+          throw new Error("No access token found")
+        }
+        const token = JSON.parse(full_token).token
+        if(!token){
+          throw new Error("No token found in access token")
+        }
+        const response = await axios.get(`${Apiurl}/api/extraction/resume`,{
+          headers:{
+            "Authorization":`Bearer ${token}`
+          }
+        })
+
+        if(!response.data){
+          throw new Error("No resume data found in response")
+        }
+        console.log(response.data)
+        setResumeUrl(response.data)
+      }
+      catch(error){
+        console.error('Error fetching resume:', error)
+      }
+      finally{
+        setResumeLoading(false)
+      }
+    }
+    fetchResume();
+  },[])
 
     useEffect(()=>{
       if(!isAuthenticated()){
@@ -86,7 +123,7 @@ export default function DashboardPage(){
       case 'email':
         return <EmailSection />;
       case 'resume':
-        return <ResumeSection />;
+        return <ResumeSection resume_url={resumeUrl} loading={resumeLoading} />;
       case 'home':
       default:
         return <DashboardHome />;
