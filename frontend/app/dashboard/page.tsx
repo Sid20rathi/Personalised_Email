@@ -123,7 +123,7 @@ export default function DashboardPage(){
       case 'email':
         return <EmailSection />;
       case 'resume':
-        return <ResumeSection resume_url={resumeUrl} loading={resumeLoading} />;
+        return <ResumeSection  />;
       case 'home':
       default:
         return <DashboardHome />;
@@ -180,7 +180,7 @@ export default function DashboardPage(){
         </SidebarBody>
       </Sidebar>
       <div className="flex flex-1">
-          <div className="flex h-full w-full flex-1 flex-col gap-2 rounded-tl-2xl border border-neutral-200 bg-white p-2 md:p-10 dark:border-neutral-700 dark:bg-neutral-900">
+          <div className="flex h-screen w-full flex-1 flex-col gap-2 rounded-tl-2xl border border-neutral-200 bg-white p-2 md:p-10 dark:border-neutral-700 dark:bg-neutral-900">
             {renderActiveComponent()}
           </div>
         </div>

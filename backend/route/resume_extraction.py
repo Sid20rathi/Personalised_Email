@@ -13,11 +13,12 @@ from sqlmodel import Field, Session, SQLModel, create_engine, select
 import tempfile
 import requests
 import uuid
+import httpx
 
 project_root = Path(__file__).parent.parent
 sys.path.insert(0, str(project_root))
 
-from fastapi import APIRouter, HTTPException, UploadFile, File,Depends ,Request
+from fastapi import APIRouter, HTTPException, UploadFile, File,Depends ,Request ,Response
 from Auth.auth import Authenticate_user
 from utils.limiter import limiter
 
@@ -288,6 +289,33 @@ async def upload_resume(request: Request,file: UploadFile = File(...),user_paylo
             status_code=500, 
             detail=f"Failed to process upload: {str(e)}"
         )
+
+
+@router2.get("/view-pdf")
+async def view_pdf(url: str):
+    """
+    Proxies the PDF file to force 'inline' display.
+    """
+    if not url:
+        raise HTTPException(status_code=400, detail="Missing URL")
+
+    async with httpx.AsyncClient() as client:
+       
+        external_response = await client.get(url)
+        
+        if external_response.status_code != 200:
+            raise HTTPException(status_code=400, detail="Failed to fetch PDF")
+
+   
+    return Response(
+        content=external_response.content,
+        media_type="application/pdf",
+        headers={
+            "Content-Disposition": "inline; filename=resume.pdf",
+            "Cache-Control": "public, max-age=3600" 
+        }
+    )
+
 
 
 @router2.get("/resume")

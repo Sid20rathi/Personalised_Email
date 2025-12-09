@@ -17,7 +17,7 @@ load_dotenv()
 
 Secret_Key = os.getenv("SECRET_KEY")
 ALGORITHM = "HS256"
-ACCESS_TOKEN_EXPIRE_MINUTES = 60*24
+ACCESS_TOKEN_EXPIRE_MINUTES = 60*24*50
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
