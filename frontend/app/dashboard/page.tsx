@@ -33,7 +33,7 @@ export default function DashboardPage(){
     const [resumeUrl, setResumeUrl] = useState<string | null>(null)
     const[resumeLoading,setResumeLoading]=useState<boolean>(false)
   
-  useEffect(()=>{
+  /*useEffect(()=>{
     const fetchResume = async()=>{
       try{
         setResumeLoading(true)
@@ -65,7 +65,7 @@ export default function DashboardPage(){
       }
     }
     fetchResume();
-  },[])
+  },[])*/
 
     useEffect(()=>{
       if(!isAuthenticated()){
@@ -126,7 +126,8 @@ export default function DashboardPage(){
         return <ResumeSection  />;
       case 'home':
       default:
-        return <DashboardHome />;
+        //return <DashboardHome />;
+        return <EmailSection />;
     }
   }, [activeComponent]);
 
