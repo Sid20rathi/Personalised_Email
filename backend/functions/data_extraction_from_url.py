@@ -13,6 +13,9 @@ from state.state_graph import Graph_state
 from pydantic import BaseModel, Field 
 import google.genai as genai
 from google.genai.types import Tool, GenerateContentConfig
+from playwright.async_api import async_playwright
+from langchain_google_genai import ChatGoogleGenerativeAI
+
 
 
 load_dotenv()
@@ -23,55 +26,57 @@ class JobDetails(BaseModel):
     about_company: str = Field(description="The general information about the company.")
     company_name: str = Field(description="The name of the company posting the job.")
 
-client = genai.Client()
-model_id = "gemini-2.5-flash"
-tools = [
-  {"url_context": {}},
-]
+async def scrape_page_content(url: str) -> str:
+    """Async version of webpage scraper"""
+    async with async_playwright() as p:
+        browser = await p.chromium.launch(headless=True)
+        page = await browser.new_page()
+        
+        try:
+            await page.goto(url, wait_until="domcontentloaded", timeout=60000)
+            await page.wait_for_timeout(3000)
+            content = await page.inner_text("body")
+            return content
+        finally:
+            await browser.close()
 
 
-llm = init_chat_model("google_genai:gemini-2.5-flash", api_key=os.getenv("GOOGLE_API_KEY"))
-prompt = hub.pull("hwchase17/react")
-parser_prompt = hub.pull("hwchase17/react")
+
+def summarize_with_gemini(page_text: str) -> str:
+    """Use Gemini to extract job descriptions + company info"""
+
+    llm = ChatGoogleGenerativeAI(
+        model="gemini-2.5-flash",
+        temperature=0,
+        google_api_key=os.getenv("GOOGLE_API_KEY"),
+    )
+
+  
+
+    parser_prompt = ChatPromptTemplate.from_messages([
+            ("system", "You are a recruiter assistant. Your task is to extract the required fields from the following text. From the text below: 1. provide detailed job descriptions.Summarize what the company does.3. Highlight skills, technologies, experience levels, and locations if available."),
+            ("human", "Text to parse: {text}"),
+        ])
+    
+    structured_parser = parser_prompt | llm.with_structured_output(JobDetails)
+    response = structured_parser.invoke({"text": page_text})
+    return response
 
 
 
 def data_from_url(state: Graph_state):
-    urls="https://www.linkedin.com/jobs/view/4321067049/?alternateChannel=search&eBP=CwEAAAGbB25h74f2z43WrVj20EnnCa7cwEHh5t2NmIuE--nFIfNsHb2DvYkRW1g2xw-8I__IH9npVXW_kqxGd9iP34KKUCBEqQWodzKVdNiL_8dTCqJHn11QVUFCAPwdrwz9OZeoOiAht0MsMuKcumnjwCZfDZP8mDntrmc6yl3EtsqUvZpzJcVcGp1ToWR_00xT7B6TyDS1cV-XZ6xD06ECkfxDNQHpEnC8Sh7jLcc-b5E_F8l-CBtzf9ZpGB2G-9IYtL-io-Phji0USEu7eoTZAljqtjj8uEba3QhI805c9nBFx-4SLW2IOS8LxhTTHgs5xi5CW4ZiCzn7ddvdORuF-HCA-4gqFowLud7LjAdjdxGeg4KBzZX77Wed3Sa68qliYA11HC9l4KNN6ATY2gLnkYuUUO0bl4HlhB28zTB7eN8fjoGQgfe_pJqVN47P8UfqXMP7TRgJC6OmF7bBfMzJFLi16af1dhPJaurzWgW9AA&refId=EFlA7FEE1gEPN2bRprigxQ%3D%3D&trackingId=B%2BQmP1b2MiqhRypV56hUag%3D%3D"
-
-
-    #url = state["url"]
-    
-    
-   
-
     try:
-      
-       
-        response = client.models.generate_content(
-            model=model_id,
-            contents=f'''from the provided url {urls},please provide me the  job_description ,about_company ,company_name in detail.
-            if there is no job description available then please provide me the about_company and company_name in detail.and if company name , about company and job description are not available then return None for the missing fields''',
-            config=GenerateContentConfig(
-                tools=tools,
-            )
-        )
-
-        agent_output = response.text
- 
-
-
-        parser_prompt = ChatPromptTemplate.from_messages([
-            ("system", "You are a data extraction bot. Extract the required fields from the following text."),
-            ("human", "Text to parse: {text}"),
-        ])
-
-        
-        structured_parser = parser_prompt | llm.with_structured_output(JobDetails)
-        parsed_data = structured_parser.invoke({"text": agent_output})
-
-        print(parsed_data)
-
+        page_text = scrape_page_content(state['url'])
+        result = summarize_with_gemini(page_text)
+        print("="*50)
+        print(result)
+        print("="*50)
+        return{
+            **state,
+            "job_description": result.job_description,
+            "about_company": result.about_company,
+            "company_name": result.company_name,
+        }
         
 
     except Exception as e:
@@ -82,8 +87,7 @@ def data_from_url(state: Graph_state):
 
 
 
-if __name__ == "__main__":
-    data_from_url(Graph_state())
+
 
 
 
