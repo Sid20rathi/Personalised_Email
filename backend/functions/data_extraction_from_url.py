@@ -15,6 +15,9 @@ import google.genai as genai
 from google.genai.types import Tool, GenerateContentConfig
 from playwright.async_api import async_playwright
 from langchain_google_genai import ChatGoogleGenerativeAI
+from playwright.sync_api import sync_playwright 
+import asyncio
+from concurrent.futures import ThreadPoolExecutor
 
 
 
@@ -26,19 +29,38 @@ class JobDetails(BaseModel):
     about_company: str = Field(description="The general information about the company.")
     company_name: str = Field(description="The name of the company posting the job.")
 
+
+executor = ThreadPoolExecutor(max_workers=1)
+
+
+
+
+
+
+
+
 async def scrape_page_content(url: str) -> str:
-    """Async version of webpage scraper"""
+    """Async function to scrape page content using Playwright"""
     async with async_playwright() as p:
         browser = await p.chromium.launch(headless=True)
         page = await browser.new_page()
+
+        # Navigate to the page
+        await page.goto(url, wait_until="domcontentloaded", timeout=60000)
         
-        try:
-            await page.goto(url, wait_until="domcontentloaded", timeout=60000)
-            await page.wait_for_timeout(3000)
-            content = await page.inner_text("body")
-            return content
-        finally:
-            await browser.close()
+        # Wait for content to load
+        await page.wait_for_timeout(3000)
+
+        # Get the page content
+        content = await page.inner_text("body")
+
+        # Close browser
+        await browser.close()
+        return content
+
+
+
+
 
 
 
@@ -64,13 +86,11 @@ def summarize_with_gemini(page_text: str) -> str:
 
 
 
-def data_from_url(state: Graph_state):
+async def data_from_url(state: Graph_state):
     try:
-        page_text = scrape_page_content(state['url'])
+        page_text =  await scrape_page_content(state['url'])
         result = summarize_with_gemini(page_text)
-        print("="*50)
-        print(result)
-        print("="*50)
+       
         return{
             **state,
             "job_description": result.job_description,

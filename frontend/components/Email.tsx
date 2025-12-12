@@ -67,7 +67,7 @@ export default function EmailSection() {
         }
         console.log(token)
       const response = await axios.post(`${Apiurl}/api/generate/email`,{
-        url:data.joburl},{
+        joburl:data.joburl},{
         headers: {
             "Content-Type": "application/json",
             "Authorization": `Bearer ${token}`,

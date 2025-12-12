@@ -13,7 +13,7 @@ from utils.limiter import limiter
 
 
 class content_url(BaseModel):
-    url : HttpUrl
+    joburl : HttpUrl
 
 
 
@@ -30,7 +30,8 @@ def check_health(request: Request):
 @limiter.limit("5/minute")
 async def email_generation(request: Request,content_url:content_url,user_payload:dict = Depends(Authenticate_user)):
     try:
-        state =  graph.invoke({'url':content_url.url,"user_id":user_payload.get("id")})
+        # Debug print
+        state = await graph.ainvoke({'url':str(content_url.joburl),"user_id":user_payload.get("id")})
 
         return {"email_subject":state["email_subject"],"email_body":state["email_body"],"company_name":state["company_name"]}
          
