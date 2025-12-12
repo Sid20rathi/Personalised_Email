@@ -6,6 +6,7 @@ import { z } from "zod";
 import axios from "axios";
 import { toast, Toaster } from "react-hot-toast"; 
 import { LoaderOne } from "./ui/loader";
+import Email_layout from "./Email_layout";
 
 
 const urlschema = z.object({
@@ -107,14 +108,18 @@ export default function EmailSection() {
       <h2 className="text-4xl text-center text-black font-bold ">{!jobUrl ? " Generate Personalized Email " : "Email Generated"}</h2>
       <p className="text-sm text-neutral-500">{!jobUrl ? "(Provide the url of the job positing for which you want to generate an email...)" : " "}</p>
     </div>
-    {!jobUrl ? <div className ="mt-7 w-full">
+    {jobUrl ? <div className ="mt-7 w-full">
        <PlaceholdersAndVanishInput
             placeholders={placeholders}
             onChange={handleInputChange}
             onSubmit={() => handleSubmit(onSubmit)()}
           />
       {errors.joburl && <p className="text-red-500 text-sm flex items-center justify-center mt-3">{errors.joburl.message}</p>}
-    </div>:<div>hi </div>}
+    </div>:
+    
+    
+    <div className=" w-lvh h-full border-2 rounded-md mt-16 shadow-md ">
+      <Email_layout/> </div>}
     </div>
    
   );
