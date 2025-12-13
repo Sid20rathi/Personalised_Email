@@ -9,11 +9,14 @@ import { LoaderOne } from "./ui/loader";
 import Email_layout from "./Email_layout";
 
 
+
 const urlschema = z.object({
   joburl: z.string().url({ message: "Please enter a valid URL" }).min(1, { message: "Job URL is required" }),
 })
 
 type urldata = z.infer<typeof urlschema>
+
+type emailgenerated ="yes" | "no" 
 
 
 
@@ -22,6 +25,18 @@ export default function EmailSection() {
   const [jobUrl,setJoburl] = useState<string|null>(null)
   const [loading,setLoading] = useState<boolean>(false)
   const Apiurl = process.env.NEXT_PUBLIC_API_URL;
+  const [email,setEmail] = useState<emailgenerated >('no')
+  const[subject,setSubject] = useState<string| null>(null)
+  const[body,setBody] = useState<string| null>(null)
+  const[companyName,setCompanyName] = useState<string| null>(null)
+
+  const close = ()=>{
+    setEmail('no')
+    setSubject(null)
+    setBody(null)
+    setJoburl(null)
+    setCompanyName(null)
+  }
 
    const { 
     register, 
@@ -66,7 +81,7 @@ export default function EmailSection() {
         if(!token){
           throw new Error("No token found in access token")
         }
-        console.log(token)
+        
       const response = await axios.post(`${Apiurl}/api/generate/email`,{
         joburl:data.joburl},{
         headers: {
@@ -78,12 +93,18 @@ export default function EmailSection() {
        if(!response.data){
           throw new Error("No email data found in response")
         }
-       console.log(response.data)
+        console.log(response.data)
+        setSubject(response.data.email_subject)
+        setBody(response.data.email_body)
+        setCompanyName(response.data.company_name)
+        setEmail('yes')
+        toast.success("Email generated successfully")
+       
        reset()
 
     }
     catch(error){
-      console.log(error)
+      
       toast.error("Error generating email")
     }
     finally{
@@ -93,8 +114,9 @@ export default function EmailSection() {
   }
 
   if (loading) {
-      return <div className='text-center text-4xl font-serif mt-80 flex justify-center items-center'> 
-      <span className='ml-5 pt-4 pr-4'>Generating your Email</span>  <LoaderOne />
+      return <div className='text-center text-4xl font-serif mt-80 flex justify-center items-center flex-col'> 
+      <div className="flex flex-row"><span className='ml-5 pt-4 pr-4'>Generating your Email</span>  <LoaderOne /></div>
+      <p className="text-sm text-neutral-500">(Please wait while we generate your email. This usually takes a few seconds.)</p>
       
       
       </div>
@@ -105,10 +127,11 @@ export default function EmailSection() {
   return (
     <div className="w-full h-screen flex justify-center items-center flex-col">
        <div className=" flex justify-center items-center flex-col">
-      <h2 className="text-4xl text-center text-black font-bold ">{!jobUrl ? " Generate Personalized Email " : "Email Generated"}</h2>
-      <p className="text-sm text-neutral-500">{!jobUrl ? "(Provide the url of the job positing for which you want to generate an email...)" : " "}</p>
+      <h2 className="text-4xl text-center text-black font-bold ">{email === 'no'? " Generate Personalized Email " : "Email Generated"}</h2>
+      <p className="text-sm text-neutral-500">{email === 'no'? "(Provide the url of the job positing for which you want to generate an email...)" : " "}</p>
     </div>
-    {jobUrl ? <div className ="mt-7 w-full">
+    <Toaster position="top-right" />
+    {email === 'no'? <div className ="mt-7 w-full">
        <PlaceholdersAndVanishInput
             placeholders={placeholders}
             onChange={handleInputChange}
@@ -119,7 +142,7 @@ export default function EmailSection() {
     
     
     <div className=" w-lvh h-full border-2 rounded-md mt-16 shadow-md ">
-      <Email_layout/> </div>}
+      <Email_layout subject={subject} body={body} setclose={close} company={companyName}/> </div>}
     </div>
    
   );

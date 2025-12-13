@@ -8,6 +8,7 @@ import LogoutButton from "@/components/LogutoutButton";
 import {
   IconArrowLeft,
   IconBrandTabler,
+  IconMailAi,
   IconSettings,
   IconUserBolt,
 } from "@tabler/icons-react";
@@ -80,7 +81,7 @@ export default function DashboardPage(){
       label: "Email",
       href: "#",
       icon: (
-        <IconBrandTabler className="h-5 w-5 shrink-0 text-neutral-700 dark:text-neutral-200" />
+        <IconMailAi className="h-5 w-5 shrink-0 text-neutral-700 dark:text-neutral-200" />
       ),
     },
     {
@@ -197,13 +198,15 @@ export const Logo = () => {
       href="#"
       className="relative z-20 flex items-center space-x-2 py-1 text-sm font-normal text-black"
     >
-      <div className="h-5 w-6 shrink-0 rounded-tl-lg rounded-tr-sm rounded-br-lg rounded-bl-sm bg-black dark:bg-white" />
+      <div>
+        <img src="/logo2.png" alt="logo" className="h-5 w-5 shrink-0 rounded-tl-lg rounded-tr-sm rounded-br-lg rounded-bl-sm bg-transparent" />
+      </div>
       <motion.span
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         className="font-medium whitespace-pre text-black dark:text-white"
       >
-        Acet Labs
+        ResuMail
       </motion.span>
     </a>
   );
@@ -212,9 +215,12 @@ export const LogoIcon = () => {
   return (
     <a
       href="#"
-      className="relative z-20 flex items-center space-x-2 py-1 text-sm font-normal text-black"
+      className="relative z-20 flex items-center  py-1  font-normal text-black"
     >
-      <div className="h-5 w-6 shrink-0 rounded-tl-lg rounded-tr-sm rounded-br-lg rounded-bl-sm bg-black dark:bg-white" />
+     <div>
+        <img src="/logo2.png" alt="logo" className=" w-full rounded-tl-lg rounded-tr-sm rounded-br-lg rounded-bl-sm bg-transparent" />
+        
+      </div>
     </a>
   );
 };
