@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { PlaceholdersAndVanishInput } from "./ui/placeholders-and-vanish-input";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -29,6 +29,8 @@ export default function EmailSection() {
   const[subject,setSubject] = useState<string| null>(null)
   const[body,setBody] = useState<string| null>(null)
   const[companyName,setCompanyName] = useState<string| null>(null)
+  const [resumeUrl,setResumeUrl] = useState<string| null>(null)
+  
 
   const close = ()=>{
     setEmail('no')
@@ -61,12 +63,44 @@ export default function EmailSection() {
     setValue("joburl", e.target.value, { shouldValidate: true });
   };
   const handlePlaceholderSubmit = (value: string) => {
-    // This assumes PlaceholdersAndVanishInput returns the input value
+  
     setValue("joburl", value, { shouldValidate: true });
-    
-    // Submit the form
     handleSubmit(onSubmit)();
   };
+
+  useEffect(()=>{
+    const fetchResume = async()=>{
+      try{
+        
+        const full_token = localStorage.getItem("email_access_token")
+        if(!full_token){
+          throw new Error("No access token found")
+        }
+        const token = JSON.parse(full_token).token
+        if(!token){
+          throw new Error("No token found in access token")
+        }
+        const response = await axios.get(`${Apiurl}/api/extraction/resume`,{
+          headers:{
+            "Authorization":`Bearer ${token}`
+          }
+        })
+
+        if(!response.data){
+          throw new Error("No resume data found in response")
+        }
+        
+        setResumeUrl(response.data)
+      }
+      catch(error){
+        console.error('Error fetching resume:', error)
+      }
+      finally{
+        
+      }
+    }
+    fetchResume();
+  },[])
 
  
  
@@ -81,7 +115,11 @@ export default function EmailSection() {
         if(!token){
           throw new Error("No token found in access token")
         }
-        
+        if(!resumeUrl){
+          toast.error("Pls upload resume to generate the personilzed email.")
+          return
+
+        }
       const response = await axios.post(`${Apiurl}/api/generate/email`,{
         joburl:data.joburl},{
         headers: {

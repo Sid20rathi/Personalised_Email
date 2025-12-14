@@ -10,3 +10,5 @@ alembic/versions
 alembic/__pycache__/
 env.py
 .env.local
+todo.txt
+.gitignore
