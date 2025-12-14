@@ -2,7 +2,7 @@
 
 
 import { useRouter } from "next/navigation"
-import React,{ useState ,useEffect, useCallback } from "react"
+import React, { useState, useEffect, useCallback } from "react"
 import { isAuthenticated } from '@/lib/auth';
 import LogoutButton from "@/components/LogutoutButton";
 import {
@@ -19,21 +19,23 @@ import { Sidebar, SidebarBody, SidebarLink } from "@/components/ui/sidebar";
 import { logout } from '@/lib/auth'
 import EmailSection from "@/components/Email";
 import ResumeSection from "@/components/Resume";
-import DashboardHome from "@/components/Dashboard";
-import axios from "axios";
-
-type ActiveComponent = "home"|"email"|"resume"
 
 
-export default function DashboardPage(){
-    const router = useRouter()
-    const[loading,setLoading]=useState(false)
-    const Apiurl  = process.env.NEXT_PUBLIC_API_URL
-    const [accessToken, setAccessToken] = useState<string | null>(null);
-    const [activeComponent, setActiveComponent] = useState<ActiveComponent>('home');
-    const [resumeUrl, setResumeUrl] = useState<string | null>(null)
-    const[resumeLoading,setResumeLoading]=useState<boolean>(false)
-  
+type ActiveComponent = "home" | "email" | "resume"
+
+
+
+import { InteractiveGridPattern } from "@/components/ui/interactive-grid-pattern";
+
+export default function DashboardPage() {
+  const router = useRouter()
+  const [loading, setLoading] = useState(false)
+  const Apiurl = process.env.NEXT_PUBLIC_API_URL
+  const [accessToken, setAccessToken] = useState<string | null>(null);
+  const [activeComponent, setActiveComponent] = useState<ActiveComponent>('home');
+  const [resumeUrl, setResumeUrl] = useState<string | null>(null)
+  const [resumeLoading, setResumeLoading] = useState<boolean>(false)
+
   /*useEffect(()=>{
     const fetchResume = async()=>{
       try{
@@ -68,15 +70,15 @@ export default function DashboardPage(){
     fetchResume();
   },[])*/
 
-    useEffect(()=>{
-      if(!isAuthenticated()){
-        router.push("/signin")
-      }
-    },[])
+  useEffect(() => {
+    if (!isAuthenticated()) {
+      router.push("/signin")
+    }
+  }, [])
 
 
 
-    const links = [
+  const links = [
     {
       label: "Email",
       href: "#",
@@ -101,8 +103,8 @@ export default function DashboardPage(){
   ];
   const [open, setOpen] = useState(false);
 
-  const handleLinkClick = useCallback((label:string)=>{
-    switch(label.toLowerCase()){
+  const handleLinkClick = useCallback((label: string) => {
+    switch (label.toLowerCase()) {
       case 'email':
         setActiveComponent('email')
         break;
@@ -117,14 +119,14 @@ export default function DashboardPage(){
         break;
     }
 
-  },[])
+  }, [])
 
-   const renderActiveComponent = useCallback(() => {
+  const renderActiveComponent = useCallback(() => {
     switch (activeComponent) {
       case 'email':
         return <EmailSection />;
       case 'resume':
-        return <ResumeSection  />;
+        return <ResumeSection />;
       case 'home':
       default:
         //return <DashboardHome />;
@@ -133,7 +135,7 @@ export default function DashboardPage(){
   }, [activeComponent]);
 
 
-   const isLinkActive = useCallback((label: string): boolean => {
+  const isLinkActive = useCallback((label: string): boolean => {
     return (
       (label === 'Home' && activeComponent === 'home') ||
       (label === 'Email' && activeComponent === 'email') ||
@@ -147,49 +149,64 @@ export default function DashboardPage(){
 
 
 
-    return(
-        <div className="w-full h-screen bg-neutral-100 ">
-          
+  return (
+    <div className="w-full h-screen bg-neutral-100 ">
 
-            <div
-      className={cn(
-        "h-screen flex w-full  flex-1 flex-col overflow-hidden rounded-md border border-neutral-200  md:flex-row dark:border-neutral-700 dark:bg-neutral-800",
-        "", 
-      )}
-    >
-      <Sidebar open={open} setOpen={setOpen}>
-        <SidebarBody className="justify-between gap-10">
-          <div className="flex flex-1 flex-col overflow-x-hidden overflow-y-auto">
-            {open ? <Logo /> : <LogoIcon />}
-            <div className="mt-8 flex flex-col gap-2">
-              {links.map((link, idx) => (
+
+      <div
+        className={cn(
+          "h-screen flex w-full  flex-1 flex-col overflow-hidden rounded-md border border-neutral-200  md:flex-row dark:border-neutral-700 dark:bg-neutral-800",
+          "",
+        )}
+      >
+        <Sidebar open={open} setOpen={setOpen}>
+          <SidebarBody className="justify-between gap-10">
+            <div className="flex flex-1 flex-col overflow-x-hidden overflow-y-auto">
+              {open ? <Logo /> : <LogoIcon />}
+              <div className="mt-8 flex flex-col gap-2">
+                {links.map((link, idx) => (
                   <div
                     key={idx}
                     onClick={() => handleLinkClick(link.label)}
                     className="cursor-pointer"
                   >
-                    <SidebarLink 
+                    <SidebarLink
                       link={link}
                       isActive={isLinkActive(link.label)}
                     />
                   </div>
                 ))}
-             
+
+              </div>
             </div>
-          </div>
-          <div>
-          </div>
-        </SidebarBody>
-      </Sidebar>
-      <div className="flex flex-1">
-          <div className="flex h-screen w-full flex-1 flex-col gap-2 rounded-tl-2xl border border-neutral-200 bg-white p-2 md:p-10 dark:border-neutral-700 dark:bg-neutral-900">
-            {renderActiveComponent()}
+            <div>
+            </div>
+          </SidebarBody>
+        </Sidebar>
+        <div className="flex flex-1 ">
+
+
+          <div className="relative overflow-hidden z-40 flex h-screen w-full flex-1 flex-col gap-2 rounded-tl-2xl border border-neutral-200 bg-white p-2 md:p-10 dark:border-neutral-700 dark:bg-neutral-900">
+            <InteractiveGridPattern
+              width={40}
+              height={40}
+              squares={[100, 100]}
+              className={cn(
+                "absolute -top-[30%] -left-[10%] h-[150%] w-[120%] skew-y-12",
+              )}
+              squaresClassName="hover:fill-blue-100"
+            />
+            <div className="z-30 pointer-events-none">
+              {renderActiveComponent()}
+
+            </div>
+
           </div>
         </div>
-    
+
+      </div>
     </div>
-        </div>
-    )
+  )
 }
 
 export const Logo = () => {
@@ -198,15 +215,13 @@ export const Logo = () => {
       href="#"
       className="relative z-20 flex items-center space-x-2 py-1 text-sm font-normal text-black"
     >
-      <div>
-        <img src="/logo2.png" alt="logo" className="h-5 w-5 shrink-0 rounded-tl-lg rounded-tr-sm rounded-br-lg rounded-bl-sm bg-transparent" />
-      </div>
+
       <motion.span
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         className="font-medium whitespace-pre text-black dark:text-white"
       >
-        ResuMail
+        <span className="text-3xl font-extrabold text-blue-600">R</span>esuMail
       </motion.span>
     </a>
   );
@@ -217,20 +232,20 @@ export const LogoIcon = () => {
       href="#"
       className="relative z-20 flex items-center  py-1  font-normal text-black"
     >
-     <div>
-        <img src="/logo2.png" alt="logo" className=" w-full rounded-tl-lg rounded-tr-sm rounded-br-lg rounded-bl-sm bg-transparent" />
-        
+      <div>
+        <span className="text-3xl font-extrabold text-blue-600">R</span>
+
       </div>
     </a>
   );
 };
- 
+
 // Dummy dashboard component with content
 const Dashboard = () => {
   return (
     <div className="flex flex-1">
       <div className="flex h-full w-full flex-1 flex-col gap-2 rounded-tl-2xl border border-neutral-200 bg-white p-2 md:p-10 dark:border-neutral-700 dark:bg-neutral-900">
-        
+
       </div>
     </div>
   );

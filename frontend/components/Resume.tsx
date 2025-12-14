@@ -1,61 +1,61 @@
-import {useState,useEffect} from 'react'
+import { useState, useEffect } from 'react'
 import axios from 'axios';
 import { LoaderOne } from './ui/loader';
 import { FileUpload } from './ui/file-upload';
 import { RippleButton } from './ui/ripple-button';
-import { toast, Toaster } from "react-hot-toast"; 
+import { toast, Toaster } from "react-hot-toast";
 
 
 import PdfViewer from './PDFViewer';
 
 
-export default function ResumeSection(){
+export default function ResumeSection() {
   const Apiurl = process.env.NEXT_PUBLIC_API_URL
-  const[loading,setLoading] = useState<boolean>(false)
-  const[resumeUrl,setResumeUrl] = useState<string|null>(null)
+  const [loading, setLoading] = useState<boolean>(false)
+  const [resumeUrl, setResumeUrl] = useState<string | null>(null)
 
   const [files, setFiles] = useState<File[]>([]);
   const handleFileUpload = (files: File[]) => {
-    setFiles(files);  
+    setFiles(files);
   };
 
 
 
 
 
-  useEffect(()=>{
-    const fetchResume = async()=>{
-      try{
+  useEffect(() => {
+    const fetchResume = async () => {
+      try {
         setLoading(true)
         const full_token = localStorage.getItem("email_access_token")
-        if(!full_token){
+        if (!full_token) {
           throw new Error("No access token found")
         }
         const token = JSON.parse(full_token).token
-        if(!token){
+        if (!token) {
           throw new Error("No token found in access token")
         }
-        const response = await axios.get(`${Apiurl}/api/extraction/resume`,{
-          headers:{
-            "Authorization":`Bearer ${token}`
+        const response = await axios.get(`${Apiurl}/api/extraction/resume`, {
+          headers: {
+            "Authorization": `Bearer ${token}`
           }
         })
 
-        if(!response.data){
+        if (!response.data) {
           throw new Error("No resume data found in response")
         }
         console.log(response.data)
         setResumeUrl(response.data)
       }
-      catch(error){
+      catch (error) {
         console.error('Error fetching resume:', error)
       }
-      finally{
+      finally {
         setLoading(false)
       }
     }
     fetchResume();
-  },[])
+  }, [])
 
 
 
@@ -65,31 +65,31 @@ export default function ResumeSection(){
 
 
 
-  const upload_resume = async ()=>{
-    try{
+  const upload_resume = async () => {
+    try {
       setLoading(true)
-      if(files.length==0){
+      if (files.length == 0) {
         toast.error("Please upload a file")
         return;
       }
       const stored = localStorage.getItem("email_access_token")
-      if(!stored){
+      if (!stored) {
         toast.error("No access token found")
         return;
       }
       const token = JSON.parse(stored).token
-      if(!token){
+      if (!token) {
         toast.error("No token found in access token")
         return;
       }
       const formData = new FormData();
-      formData.append("file",files[0])
-      const response = await axios.post(`${Apiurl}/api/extraction/resume_upload`,formData,{
-        headers:{
-          "Authorization":`Bearer ${token}`
+      formData.append("file", files[0])
+      const response = await axios.post(`${Apiurl}/api/extraction/resume_upload`, formData, {
+        headers: {
+          "Authorization": `Bearer ${token}`
         }
       })
-      if(!response.data){
+      if (!response.data) {
         throw new Error("No resume data found in response")
       }
       const blobUrl = response.data?.blob_url;
@@ -100,14 +100,14 @@ export default function ResumeSection(){
       setResumeUrl(blobUrl);
       toast.success("Resume uploaded successfully")
       setFiles([])
-      
+
     }
-    catch(error){
+    catch (error) {
       console.log(error)
     }
-    finally{
+    finally {
       setLoading(false)
-      setFiles([])  
+      setFiles([])
     }
   }
 
@@ -123,43 +123,43 @@ export default function ResumeSection(){
 
 
   if (loading) {
-    return <div className='text-center text-4xl font-serif mt-80 flex justify-center items-center'> 
-    <span className='ml-5 pt-4 pr-4'>Loading your Resume</span>  <LoaderOne />
-    
-    
+    return <div className='text-center text-4xl font-serif mt-80 flex justify-center items-center pointer-events-auto'>
+      <span className='ml-5 pt-4 pr-4'>Loading your Resume</span>  <LoaderOne />
+
+
     </div>
   }
 
   return (
-    <div className="p-4 pb-20 mb-96 h-full">
+    <div className="p-4 pb-20 mb-96 h-full z-50 pointer-events-auto" >
       <h2 className="text-4xl font-bold  flex items-center justify-center ">Your Resume</h2>
       <p className='text-center text-sm text-gray-500 mb-2'> (upload the resume for which you want to generate personalized email.)</p>
       <Toaster position="top-right" />
-      
-      {!resumeUrl ? <div className="w-full max-w-4x    bg-white dark:bg-black border-neutral-200 dark:border-neutral-800 rounded-lg mt-40">
-      <FileUpload onChange={handleFileUpload} />
-      <div className='flex justify-center items-center mt-10'>
-        <RippleButton rippleColor="#6008cf" onClick={upload_resume}>Upload file</RippleButton>
 
-      </div>
-    </div>
-    :
-    <div>
+      {!resumeUrl ? <div className="w-full max-w-4x    bg-transparent dark:bg-black border-neutral-200 dark:border-neutral-800 rounded-lg mt-28">
+        <FileUpload onChange={handleFileUpload} />
+        <div className='flex justify-center items-center mt-10'>
+          <RippleButton rippleColor="#6008cf" onClick={upload_resume}>Upload file</RippleButton>
 
-      <div className="mb-72 h-screen overflow-hidden">
-         
-          <PdfViewer url={getProxyUrl(resumeUrl)} />
-          
-          <div className="flex justify-center mt-4 mb-44">
-           <RippleButton rippleColor="#6008cf" onClick={()=>setResumeUrl(null)}>Upload Another Resume</RippleButton>
-          </div>
         </div>
-      
-      
-      
-      
-      </div>}
-      
+      </div>
+        :
+        <div>
+
+          <div className="mb-72 h-screen overflow-hidden">
+
+            <PdfViewer url={getProxyUrl(resumeUrl)} />
+
+            <div className="flex justify-center mt-4 mb-44">
+              <RippleButton rippleColor="#6008cf" onClick={() => setResumeUrl(null)}>Upload Another Resume</RippleButton>
+            </div>
+          </div>
+
+
+
+
+        </div>}
+
     </div>
   );
 }
