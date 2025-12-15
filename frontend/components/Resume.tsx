@@ -112,7 +112,7 @@ export default function ResumeSection() {
   }
 
   const getProxyUrl = (originalUrl: string) => {
-    // We encode the original URL to safely pass it as a query parameter
+    
     return `${Apiurl}/api/extraction/view-pdf?url=${encodeURIComponent(originalUrl)}`;
   };
 
