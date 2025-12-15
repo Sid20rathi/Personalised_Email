@@ -111,20 +111,11 @@ export default function LandingPage() {
           
           <motion.div
             style={{ y: y1, rotateX: 10 }}
-            className="mt-20 relative w-full max-w-5xl aspect-[16/10] mx-auto rounded-xl border border-neutral-200 dark:border-neutral-800 bg-white/50 dark:bg-neutral-900/50 backdrop-blur-sm shadow-2xl overflow-hidden perspective-1000 group transform-style-3d"
           >
-            <div className="absolute inset-0 bg-gradient-to-tr from-blue-500/5 via-transparent to-purple-500/5 pointer-events-none" />
-           
-            <div className=" h-[500px] flex items-center justify-center text-neutral-300">
-              <img src="/dash.png" alt="" className=""/>
-           
-              <InteractiveGridPattern
-                width={30}
-                height={30}
-                className="opacity-20 absolute inset-0 text-blue-500"
-                squares={[40, 30]}
-              />
+            <div className="border border-neutral-200 dark:border-neutral-800 rounded-xl overflow-hidden shadow-2xl mb-10">
+              <img src="/dash.png" alt="" className="w-full h-full object-cover"/>
             </div>
+         
           </motion.div>
         </div>
       </section>
@@ -151,7 +142,7 @@ export default function LandingPage() {
             <FeatureCard
               icon={<IconSettings className="w-10 h-10 text-emerald-500" />}
               title="Full Control"
-              description="Edit, tweak, and regenerate emails until they sound exactly like you."
+              description="Edit and tweak until they sound exactly like you."
             />
           </div>
         </div>
@@ -195,7 +186,7 @@ export default function LandingPage() {
      
       <section className="py-24 px-6 bg-black text-white relative overflow-hidden">
         <div className="absolute inset-0 z-0">
-          <PixelBlast variant="circle" color="#ffffff" pixelSize={20} transparent={false} className="opacity-10" />
+          
         </div>
         <div className="max-w-4xl mx-auto text-center relative z-10">
           <h2 className="text-4xl md:text-6xl font-bold mb-8">Ready to supercharge your job search?</h2>
@@ -208,19 +199,10 @@ export default function LandingPage() {
       </section>
 
       <footer className="py-12 px-6 bg-neutral-950 text-neutral-400 border-t border-neutral-900">
-        <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-8">
-          <div className="flex items-center gap-2">
-            <div className="w-6 h-6 bg-neutral-800 rounded flex items-center justify-center text-white text-xs">R</div>
-            <span className="text-lg font-semibold text-neutral-200">ResuMail</span>
-          </div>
-          <div className="flex gap-8 text-sm">
-            <Link href="#" className="hover:text-white transition-colors">Privacy</Link>
-            <Link href="#" className="hover:text-white transition-colors">Terms</Link>
-            <Link href="#" className="hover:text-white transition-colors">Twitter</Link>
-            <Link href="#" className="hover:text-white transition-colors">GitHub</Link>
-          </div>
-          <div className="text-xs text-neutral-600">
-            © 2024 ResuMail Inc. All rights reserved.
+        <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-center items-center gap-8">
+          
+          <div className="text-xs text-neutral-600 flex items-center items-center">
+            © {new Date().getFullYear()} ResuMail Inc. All rights reserved.
           </div>
         </div>
       </footer>
