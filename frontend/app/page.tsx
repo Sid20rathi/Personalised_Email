@@ -8,6 +8,9 @@ import { IconMailAi, IconUserBolt, IconSettings, IconArrowRight, IconBrandGithub
 import PixelBlast from "@/components/PixelBlast";
 import { RippleButton } from "@/components/ui/ripple-button";
 import { InteractiveGridPattern } from "@/components/ui/interactive-grid-pattern";
+import TextHighlighter from "@/components/fancy/text/text-highlighter";
+import { SparklesText } from "@/components/ui/sparkles-text";
+import { Highlighter } from "@/components/ui/highlighter";
 
 export default function LandingPage() {
   const { scrollY } = useScroll();
@@ -25,7 +28,7 @@ export default function LandingPage() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-white text-black selection:bg-blue-100 dark:bg-black dark:text-white font-sans overflow-hidden">
+    <div className="min-h-screen bg-white text-black selection:bg-blue-100 dark:bg-black dark:text-white font-sans overflow-hidden select-none">
 
     
       <nav
@@ -34,7 +37,7 @@ export default function LandingPage() {
           scrolled ? "bg-white/80 dark:bg-black/80 backdrop-blur-md border-b border-neutral-200 dark:border-neutral-800" : "bg-transparent"
         )}
       >
-        <div className="flex items-center ">
+        <div className="flex items-center select-none">
           <div className=" rounded-lg flex items-center justify-center text-blue-600 text-3xl font-bold">R</div>
           <span className="text-xl font-bold tracking-tight">esuMail</span>
         </div>
@@ -76,7 +79,7 @@ export default function LandingPage() {
             <span className="inline-block py-1 px-3 rounded-full bg-blue-100 text-blue-600 text-xs font-bold tracking-wide mb-6 border border-blue-200 uppercase">
               AI-Powered Outreach
             </span>
-            <h1 className="text-5xl md:text-7xl lg:text-8xl font-black tracking-tighter leading-[0.9] text-transparent bg-clip-text bg-gradient-to-b from-black to-neutral-500 dark:from-white dark:to-neutral-500">
+            <h1 className="text-5xl md:text-7xl lg:text-8xl font-black tracking-tighter leading-[0.9] text-transparent bg-clip-text bg-gradient-to-b from-black via-neutral-500 to-blue-700 dark:from-white dark:to-neutral-500">
               The Future of <br /> Personalized Email 
             </h1>
           </motion.div>
@@ -189,7 +192,7 @@ export default function LandingPage() {
           
         </div>
         <div className="max-w-4xl mx-auto text-center relative z-10">
-          <h2 className="text-4xl md:text-6xl font-bold mb-8">Ready to supercharge your job search?</h2>
+          <h2 className="text-4xl md:text-6xl font-bold mb-8">Ready to  <Highlighter action="underline" color="#037DFC">supercharge </Highlighter> your job search?</h2>
           <Link href="/signup">
             <button className="px-10 py-4 bg-white text-black rounded-full text-xl font-bold hover:scale-105 transition-transform duration-300">
               Get Started Now
