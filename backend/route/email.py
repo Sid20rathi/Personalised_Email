@@ -12,6 +12,8 @@ from Auth.auth import Authenticate_user
 from utils.limiter import limiter
 
 
+
+
 class content_url(BaseModel):
     joburl : HttpUrl
 
@@ -27,10 +29,10 @@ def check_health(request: Request):
 
 
 @router1.post("/email")
-@limiter.limit("5/minute")
+@limiter.limit("5/minute",error_message="Rate limit exceeded. Please wait a minute.")
 async def email_generation(request: Request,content_url:content_url,user_payload:dict = Depends(Authenticate_user)):
     try:
-        # Debug print
+     
         state = await graph.ainvoke({'url':str(content_url.joburl),"user_id":user_payload.get("id")})
 
         return {"email_subject":state["email_subject"],"email_body":state["email_body"],"company_name":state["company_name"]}
@@ -39,6 +41,6 @@ async def email_generation(request: Request,content_url:content_url,user_payload
     except Exception as e:
         raise HTTPException(
             status_code=422,
-            detail=f"Error:{e}"
+            detail=f"Error:{str(e)}"
         )
    
