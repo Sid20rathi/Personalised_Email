@@ -32,7 +32,7 @@ def check_health(request: Request):
 @limiter.limit("5/minute",error_message="Rate limit exceeded. Please wait a minute.")
 async def email_generation(request: Request,content_url:content_url,user_payload:dict = Depends(Authenticate_user)):
     try:
-     
+               
         state = await graph.ainvoke({'url':str(content_url.joburl),"user_id":user_payload.get("id")})
 
         return {"email_subject":state["email_subject"],"email_body":state["email_body"],"company_name":state["company_name"]}

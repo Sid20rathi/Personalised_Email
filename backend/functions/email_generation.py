@@ -40,7 +40,7 @@ def generate_email(state:Graph_state):
     try:
        
         extract_prompt =ChatPromptTemplate.from_messages([
-        ("system", f'''You the professional email generator. yopu have to generate the email subject and body from the context provided to you and the email should be in the format of a professional email.
+        ("system", f'''You the professional email writer. you have to generate the email subject and body from the context provided to you and the email should be in the format of a professional email.
         and the email subject should be short and to the point. the body should be under 200-250 words and the email should be like a human has written the email.
          context of the job posting:
 

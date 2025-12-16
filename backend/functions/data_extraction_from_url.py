@@ -76,7 +76,7 @@ def summarize_with_gemini(page_text: str) -> str:
   
 
     parser_prompt = ChatPromptTemplate.from_messages([
-            ("system", "You are a recruiter assistant. Your task is to extract the required fields from the following text. From the text below: 1. provide detailed job descriptions.Summarize what the company does.3. Highlight skills, technologies, experience levels, and locations if available."),
+            ("system", "You are a recruiter assistant. Your task is to extract the required fields from the following text. From the text below: 1. provide detailed job descriptions.Summarize what the company does.3. Highlight skills, technologies, experience levels, and locations if available.and if your not able to extract any of the fields just return empty string."),
             ("human", "Text to parse: {text}"),
         ])
     
