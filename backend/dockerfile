@@ -1,31 +1,53 @@
+FROM python:3.11-slim
 
-FROM python:3.10-slim as builder
-
-WORKDIR /app
-
-
-COPY requirements_all.txt .
-RUN pip install --no-cache-dir --user -r requirements_all.txt
-
-
-FROM python:3.10-slim
-
-WORKDIR /app
-
-
-COPY --from=builder /root/.local /root/.local
-
+# 1. Install system dependencies for Playwright & your app
 RUN apt-get update && apt-get install -y \
     wget \
     gnupg \
-    && apt-get clean
+    ca-certificates \
+    procps \
+    # Dependencies for Playwright browsers
+    libnss3 \
+    libnspr4 \
+    libatk1.0-0 \
+    libatk-bridge2.0-0 \
+    libcups2 \
+    libdrm2 \
+    libdbus-1-3 \
+    libxkbcommon0 \
+    libxcomposite1 \
+    libxdamage1 \
+    libxfixes3 \
+    libxrandr2 \
+    libgbm1 \
+    libasound2 \
+    fonts-liberation \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
 
-RUN pip install playwright \
-    && playwright install chromium \
-    && playwright install-deps chromium
+# 2. Install Node.js (required for Playwright's CLI)
+RUN wget -qO- https://deb.nodesource.com/setup_20.x | bash - \
+    && apt-get install -y nodejs
 
-# Copy application code
+WORKDIR /app
+
+# 3. Copy application files
+COPY requirements.txt .
 COPY . .
 
+# 4. Install Python dependencies
+RUN pip install --no-cache-dir -r requirements.txt
 
+# 5. Install Playwright and its browsers to a persistent location
+# Set the environment variable for the installation path
+ENV PLAYWRIGHT_BROWSERS_PATH=/opt/render/project/.cache/playwright
+# Install the Playwright Python package
+RUN pip install playwright
+# Install the necessary browsers (Chromium is usually sufficient)
+RUN playwright install --with-deps chromium
+# Ensure the cache directory exists and has correct permissions
+RUN mkdir -p $PLAYWRIGHT_BROWSERS_PATH
+
+# 6. Expose port and run the application
+EXPOSE 8000
 CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
