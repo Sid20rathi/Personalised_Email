@@ -32,11 +32,11 @@ RUN wget -qO- https://deb.nodesource.com/setup_20.x | bash - \
 WORKDIR /app
 
 # 3. Copy application files
-COPY requirements.txt .
+COPY requirements_all.txt .
 COPY . .
 
 # 4. Install Python dependencies
-RUN pip install --no-cache-dir -r requirements.txt
+RUN pip install --no-cache-dir -r requirements_all.txt
 
 # 5. Install Playwright and its browsers to a persistent location
 # Set the environment variable for the installation path
