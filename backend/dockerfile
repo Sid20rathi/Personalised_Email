@@ -1,27 +1,25 @@
-# Stage 1: Builder
+
 FROM python:3.10-slim as builder
 
 WORKDIR /app
 
-# Copy and install Python dependencies
+
 COPY requirements_all.txt .
 RUN pip install --no-cache-dir --user -r requirements_all.txt
 
-# Stage 2: Runtime
+
 FROM python:3.10-slim
 
 WORKDIR /app
 
-# Copy installed Python packages from builder
+
 COPY --from=builder /root/.local /root/.local
 
-# Install system dependencies required for Playwright
 RUN apt-get update && apt-get install -y \
     wget \
     gnupg \
     && apt-get clean
 
-# Install Playwright's browser (Chromium)
 RUN pip install playwright \
     && playwright install chromium \
     && playwright install-deps chromium
@@ -29,6 +27,5 @@ RUN pip install playwright \
 # Copy application code
 COPY . .
 
-# Ensure your main application file is correctly referenced
-# Adjust `main:app` if your entry point is different (e.g., `app.main:app`)
+
 CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
