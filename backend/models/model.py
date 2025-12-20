@@ -16,6 +16,8 @@ class Users(SQLModel, table=True):
     email: str = Field(nullable=False, index=True)
     password: str = Field(nullable=False)
     resume_url : Optional[str] = Field(default=None)
+    access_token: Optional[str] = Field(default=None)
+    refresh_token: Optional[str] = Field(default=None)
 
 
 class ResumeInfo(SQLModel, table=True):
