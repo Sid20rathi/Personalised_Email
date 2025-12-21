@@ -170,7 +170,7 @@ export default function EmailSection() {
         <p className="text-sm text-neutral-500">{email === 'no' ? "(Provide the url of the job positing for which you want to generate an email...)" : " "}</p>
       </div>
       <Toaster position="top-right" />
-      {email === 'no' ? <div className="mt-7 w-full pointer-events-auto">
+      {email === 'yes' ? <div className="mt-7 w-full pointer-events-auto">
         <PlaceholdersAndVanishInput
           placeholders={placeholders}
           onChange={handleInputChange}
@@ -180,8 +180,9 @@ export default function EmailSection() {
       </div> :
 
 
-        <div className="bg-white w-lvh h-full border-2 rounded-md mt-16 shadow-md pointer-events-auto">
+        <div className="bg-white w-lvh h-full border-2 rounded-md mt-10 shadow-md pointer-events-auto">
           <Email_layout subject={subject} body={body} setclose={close} company={companyName} /> </div>}
+          
     </div>
 
   );

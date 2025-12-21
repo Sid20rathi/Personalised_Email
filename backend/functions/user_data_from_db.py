@@ -38,6 +38,22 @@ def get_user_data(state:Graph_state):
             "projects": projects,
         }
 
+
+def store_db(id:int,token_data:dict):
+
+    with Session(engine)as session:
+        statement = select(Users).where(Users.id == id)
+        result = session.exec(statement).first()
+        if result:
+            result.access_token = token_data["access_token"]
+            result.refresh_token = token_data["refresh_token"]
+            session.add(result)
+            session.commit()
+            session.refresh(result)
+            return {"message": "Tokens stored successfully"}
+        else:
+            return {"message": "User not found"}
+       
         
 
 

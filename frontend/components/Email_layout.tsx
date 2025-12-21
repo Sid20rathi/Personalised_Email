@@ -13,6 +13,11 @@ export default function Email_layout({subject,body,setclose,company}:inputdata )
     const [editableSubject, setEditableSubject] = useState(subject ?? "");
     const [editableBody, setEditableBody] = useState(body ?? "");
 
+
+    const send = async ()=>{
+        alert("you clicked the button")
+    }
+
     const copyToClipboard = async (text: string | null) => {
         if (!text) return;
         try {
@@ -58,15 +63,20 @@ export default function Email_layout({subject,body,setclose,company}:inputdata )
                         className="w-full resize-none outline-none bg-transparent whitespace-pre-line overflow-y-scroll hide-scrollbar h-[470px] leading-relaxed overflow-auto pb-6"
                         placeholder="your email here..."
                     />
+                    
                 </div>
+                
                 <div className="">
                     <IconCopy className="w-5 h-5 cursor-pointer text-gray-400 hover:text-black " onClick={()=>copyToClipboard(editableBody)} />
                 </div>
 
             </div>
-            <div>
-
+            <div className="flex justify-end pr-7 mb-2">
+                <div className="w-40 h-10  bg-blue-600 text-white text-center font-bold cursor-pointer hover:bg-green-500 transition-colors duration-300 flex items-center justify-center rounded-4xl p-3 shadow-2xl hover:shadow-md " onClick={send}> Send</div>
             </div>
+            
+            
+           
             
         </div>
     </div>
