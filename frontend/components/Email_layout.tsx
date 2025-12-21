@@ -1,6 +1,7 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { IconCopy,IconX} from "@tabler/icons-react";
 import { toast, Toaster } from "react-hot-toast"; 
+import axios from "axios";
 type emailgenerated ="yes"
 type inputdata = {
     subject:string|null,
@@ -12,12 +13,80 @@ export default function Email_layout({subject,body,setclose,company}:inputdata )
     const [email,setEmail] = useState<emailgenerated | null>('yes')
     const [editableSubject, setEditableSubject] = useState(subject ?? "");
     const [editableBody, setEditableBody] = useState(body ?? "");
+    const [accessToken, setAccessToken] = useState('');
+    const [isAuthenticated, setIsAuthenticated] = useState(false);
+    const apiurl = process.env.NEXT_PUBLIC_API_URL
+    const[user_token,setUser_token] = useState('')
 
-
-    const send = async ()=>{
-        alert("you clicked the button")
+    useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const authStatus = params.get('auth');
+    const token = params.get('access_token');
+    
+    if (authStatus === 'success' && token) {
+      setAccessToken(token);
+      setIsAuthenticated(true);
+      
+      
+      
+      window.history.replaceState({}, '', '/')
     }
+    }, []);
 
+
+
+    useEffect(() => {
+        const fetchAccessToken = async () => {
+          try {
+            const stored = localStorage.getItem("email_access_token")
+      if (!stored) {
+        toast.error("No access token found")
+        return;
+      }
+      const token = JSON.parse(stored).token
+      if (!token) {
+        toast.error("No token found in access token")
+        return;
+      }
+      setUser_token(token)
+             const response = await axios.get(`${apiurl}/auth/authenticate`,{
+              headers: {
+                        "Authorization": `Bearer ${token}`
+        }
+            
+        })
+        setIsAuthenticated(response.data.authenticated)
+
+            
+          } catch (error) {
+            console.error('Error fetching access token:', error);
+          }
+        };
+        fetchAccessToken();
+      }, []);
+
+
+
+
+      const verify = async()=>{
+        try {
+          const response = await axios.get(`${apiurl}/auth/google`,{
+            headers: {
+                      "Authorization": `Bearer ${user_token}`
+          }
+          
+          })
+          window.location.href = response.data.auth_url;
+          
+
+        } catch (error) {
+          toast.error('Failed to start authentication');
+      console.error(error);
+        }
+      }
+
+
+    
     const copyToClipboard = async (text: string | null) => {
         if (!text) return;
         try {
@@ -72,7 +141,11 @@ export default function Email_layout({subject,body,setclose,company}:inputdata )
 
             </div>
             <div className="flex justify-end pr-7 mb-2">
-                <div className="w-40 h-10  bg-blue-600 text-white text-center font-bold cursor-pointer hover:bg-green-500 transition-colors duration-300 flex items-center justify-center rounded-4xl p-3 shadow-2xl hover:shadow-md " onClick={send}> Send</div>
+                {isAuthenticated ? <div className={`w-40 h-10 bg-blue-500 text-white text-center font-bold cursor-pointer hover:bg-green-500 transition-colors duration-300 flex items-center justify-center rounded-4xl p-3 shadow-2xl hover:shadow-md`} >Send</div>
+                :
+                <div className={`w-40 h-10 bg-green-500 text-white text-center font-bold cursor-pointer hover:bg-green-500 transition-colors duration-300 flex items-center justify-center rounded-4xl p-3 shadow-2xl hover:shadow-md`} onClick={verify} >verify</div>}
+                
+
             </div>
             
             

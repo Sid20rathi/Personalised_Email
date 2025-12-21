@@ -9,10 +9,18 @@ from fastapi.responses import RedirectResponse
 from pydantic import BaseModel , HttpUrl
 from functions.user_data_from_db import store_db
 
+from dotenv import load_dotenv
+
+from models.model import Users, ResumeInfo
+from config.database import db_session ,engine
+from sqlmodel import Session ,select
+
+
 from Auth.auth import Authenticate_user
 from utils.limiter import limiter
+import httpx
 
-
+load_dotenv()
 
 
 router5 = APIRouter()
@@ -22,7 +30,7 @@ def health_check():
     return {"message": "OAuth2 route is healthy"}
 
 
-@router5.post("/google")
+@router5.get("/google")
 @limiter.limit("5/minute",error_message="Rate limit exceeded. Please wait a minute.")
 async def google_oauth(request:Request,user_payload:dict = Depends(Authenticate_user)):
     try:
@@ -55,9 +63,9 @@ async def google_oauth(request:Request,user_payload:dict = Depends(Authenticate_
 
 
 
-@router5.post("/callback")
+@router5.get("/callback")
 @limiter.limit("5/minute",error_message="Rate limit exceeded. Please wait a minute.")
-async def google_callback(request:Request,code:str,user_payload:dict = Depends(Authenticate_user)):
+async def google_callback(request:Request,code:str):
     try:
         client_id = os.getenv("GOOGLE_CLIENT_ID")
         client_secret = os.getenv("GOOGLE_CLIENT_SECRET")
@@ -81,10 +89,11 @@ async def google_callback(request:Request,code:str,user_payload:dict = Depends(A
                 )
 
             token_data = token_response.json()
-            await store_db(user_payload["id"],token_data)
+           #await store_db(user_payload["id"],token_data)
+            print(token_data)
 
             return RedirectResponse(
-                url=f"http://localhost:3000/dashboard?auth=success"
+                url=f"http://localhost:3000/dashboard?auth=success&access_token={token_data['access_token']}"
             )
 
 
@@ -97,4 +106,22 @@ async def google_callback(request:Request,code:str,user_payload:dict = Depends(A
         return RedirectResponse(url="http://localhost:3000/dashboard?auth=failed")
         
     
-
+@router5.get("/authenticate")
+@limiter.limit("5/minute",error_message="Rate limit exceeded. Please wait a minute.")
+async def check_authenticated(request:Request,user_payload:dict = Depends(Authenticate_user)):
+    try:
+        with Session(engine) as session:
+            statement = select(Users).where(Users.id == user_payload["id"])
+            result = session.exec(statement).first()
+            if result.access_token:
+                return {"authenticated": True}
+            else:
+                return {"authenticated": False}
+        
+      
+    except Exception as e:
+        raise HTTPException(
+            status_code=500,
+            detail=f"Error:{str(e)}"
+        )
+      
