@@ -4,6 +4,7 @@ import { LoaderOne } from './ui/loader';
 import { FileUpload } from './ui/file-upload';
 import { RippleButton } from './ui/ripple-button';
 import { toast, Toaster } from "react-hot-toast";
+import { useResumeStore } from "@/app/store/resumestore";
 
 
 import PdfViewer from './PDFViewer';
@@ -11,8 +12,10 @@ import PdfViewer from './PDFViewer';
 
 export default function ResumeSection() {
   const Apiurl = process.env.NEXT_PUBLIC_API_URL
-  const [loading, setLoading] = useState<boolean>(false)
-  const [resumeUrl, setResumeUrl] = useState<string | null>(null)
+  const loading = useResumeStore((state) => state.loading)
+  const resumeUrl = useResumeStore((state) => state.resumeUrl)
+  const setLoading = useResumeStore((state) => state.setLoading)
+  const setResumeUrl = useResumeStore((state) => state.setResumeUrl)
 
   const [files, setFiles] = useState<File[]>([]);
   const handleFileUpload = (files: File[]) => {
@@ -23,7 +26,7 @@ export default function ResumeSection() {
 
 
 
-  useEffect(() => {
+  /*useEffect(() => {
     const fetchResume = async () => {
       try {
         setLoading(true)
@@ -55,7 +58,7 @@ export default function ResumeSection() {
       }
     }
     fetchResume();
-  }, [])
+  }, [])*/
 
 
 
@@ -68,6 +71,7 @@ export default function ResumeSection() {
   const upload_resume = async () => {
     try {
       setLoading(true)
+      
       if (files.length == 0) {
         toast.error("Please upload a file")
         return;

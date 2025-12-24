@@ -7,6 +7,7 @@ import axios from "axios";
 import { toast, Toaster } from "react-hot-toast";
 import { LoaderOne } from "./ui/loader";
 import Email_layout from "./Email_layout";
+import { useResumeStore } from "@/app/store/resumestore";
 
 
 
@@ -22,22 +23,33 @@ type emailgenerated = "yes" | "no"
 
 
 export default function EmailSection() {
-  const [jobUrl, setJoburl] = useState<string | null>(null)
   const [loading, setLoading] = useState<boolean>(false)
   const Apiurl = process.env.NEXT_PUBLIC_API_URL;
   const [email, setEmail] = useState<emailgenerated>('no')
   const [subject, setSubject] = useState<string | null>(null)
   const [body, setBody] = useState<string | null>(null)
   const [companyName, setCompanyName] = useState<string | null>(null)
-  const [resumeUrl, setResumeUrl] = useState<string | null>(null)
+  const resumeUrlState = useResumeStore((state) => state.resumeUrl)
+
+  useEffect(() => {
+    const email_subject = localStorage.getItem("email_subject")
+    const email_body = localStorage.getItem("email_body")
+    const company_name = localStorage.getItem("company_name")
+    if (email_subject && email_body) {
+      setSubject(email_subject)
+      setBody(email_body)
+      setCompanyName(company_name)
+      setEmail('yes')
+    }
+  }, [])
 
 
   const close = () => {
     setEmail('no')
-    setSubject(null)
-    setBody(null)
-    setJoburl(null)
-    setCompanyName(null)
+    localStorage.removeItem("email_subject")
+    localStorage.removeItem("email_body")
+    localStorage.removeItem("company_name")
+  
   }
 
   const {
@@ -68,41 +80,7 @@ export default function EmailSection() {
     handleSubmit(onSubmit)();
   };
 
-  useEffect(() => {
-    const fetchResume = async () => {
-      try {
-
-        const full_token = localStorage.getItem("email_access_token")
-        if (!full_token) {
-          throw new Error("No access token found")
-        }
-        const token = JSON.parse(full_token).token
-        if (!token) {
-          throw new Error("No token found in access token")
-        }
-        const response = await axios.get(`${Apiurl}/api/extraction/resume`, {
-          headers: {
-            "Authorization": `Bearer ${token}`
-          }
-        })
-
-        if (!response.data) {
-          throw new Error("No resume data found in response")
-        }
-
-        setResumeUrl(response.data)
-      }
-      catch (error) {
-        console.error('Error fetching resume:', error)
-      }
-      finally {
-
-      }
-    }
-    fetchResume();
-  }, [])
-
-
+  
 
   const onSubmit = async (data: urldata) => {
     try {
@@ -115,7 +93,7 @@ export default function EmailSection() {
       if (!token) {
         throw new Error("No token found in access token")
       }
-      if (!resumeUrl) {
+      if (!resumeUrlState) {
         toast.error("Pls upload resume to generate the personilzed email.")
         return
 
@@ -132,11 +110,13 @@ export default function EmailSection() {
       if (!response.data) {
         throw new Error("No email data found in response")
       }
-      console.log(response.data)
       setSubject(response.data.email_subject)
       setBody(response.data.email_body)
       setCompanyName(response.data.company_name)
       setEmail('yes')
+      localStorage.setItem("email_subject", response.data.email_subject)
+      localStorage.setItem("email_body", response.data.email_body)
+      localStorage.setItem("company_name", response.data.company_name)
       toast.success("Email generated successfully")
 
       reset()
@@ -175,6 +155,7 @@ export default function EmailSection() {
           placeholders={placeholders}
           onChange={handleInputChange}
           onSubmit={() => handleSubmit(onSubmit)()}
+          
         />
         {errors.joburl && <p className="text-red-500 text-sm flex items-center justify-center mt-3">{errors.joburl.message}</p>}
       </div> :

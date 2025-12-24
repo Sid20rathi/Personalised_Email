@@ -2,6 +2,7 @@ import { useEffect, useState } from "react"
 import { IconCopy,IconX} from "@tabler/icons-react";
 import { toast, Toaster } from "react-hot-toast"; 
 import axios from "axios";
+import { useAuthStore } from "@/app/store/authstore";
 type emailgenerated ="yes"
 type inputdata = {
     subject:string|null,
@@ -16,7 +17,7 @@ export default function Email_layout({subject,body,setclose,company}:inputdata )
     const [accessToken, setAccessToken] = useState('');
     const [isAuthenticated, setIsAuthenticated] = useState(false);
     const apiurl = process.env.NEXT_PUBLIC_API_URL
-    const[user_token,setUser_token] = useState('')
+    const token = useAuthStore((state) => state.token);
 
     useEffect(() => {
     const params = new URLSearchParams(window.location.search);
@@ -35,35 +36,7 @@ export default function Email_layout({subject,body,setclose,company}:inputdata )
 
 
 
-    useEffect(() => {
-        const fetchAccessToken = async () => {
-          try {
-            const stored = localStorage.getItem("email_access_token")
-      if (!stored) {
-        toast.error("No access token found")
-        return;
-      }
-      const token = JSON.parse(stored).token
-      if (!token) {
-        toast.error("No token found in access token")
-        return;
-      }
-      setUser_token(token)
-             const response = await axios.get(`${apiurl}/auth/authenticate`,{
-              headers: {
-                        "Authorization": `Bearer ${token}`
-        }
-            
-        })
-        setIsAuthenticated(response.data.authenticated)
-
-            
-          } catch (error) {
-            console.error('Error fetching access token:', error);
-          }
-        };
-        fetchAccessToken();
-      }, []);
+    
 
 
 
@@ -72,7 +45,7 @@ export default function Email_layout({subject,body,setclose,company}:inputdata )
         try {
           const response = await axios.get(`${apiurl}/auth/google`,{
             headers: {
-                      "Authorization": `Bearer ${user_token}`
+                      "Authorization": `Bearer ${token}`
           }
           
           })
@@ -143,7 +116,7 @@ export default function Email_layout({subject,body,setclose,company}:inputdata )
             <div className="flex justify-end pr-7 mb-2">
                 {isAuthenticated ? <div className={`w-40 h-10 bg-blue-500 text-white text-center font-bold cursor-pointer hover:bg-green-500 transition-colors duration-300 flex items-center justify-center rounded-4xl p-3 shadow-2xl hover:shadow-md`} >Send</div>
                 :
-                <div className={`w-40 h-10 bg-green-500 text-white text-center font-bold cursor-pointer hover:bg-green-500 transition-colors duration-300 flex items-center justify-center rounded-4xl p-3 shadow-2xl hover:shadow-md`} onClick={verify} >verify</div>}
+                <div className={`w-40 h-10 bg-green-500 text-white text-center font-bold cursor-pointer hover:bg-green-500 transition-colors duration-300 flex items-center justify-center rounded-4xl p-3 shadow-2xl hover:shadow-md`} onClick={verify} >Connect Gmail</div>}
                 
 
             </div>

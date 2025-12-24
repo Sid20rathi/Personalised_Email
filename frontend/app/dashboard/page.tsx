@@ -19,6 +19,9 @@ import { Sidebar, SidebarBody, SidebarLink } from "@/components/ui/sidebar";
 import { logout } from '@/lib/auth'
 import EmailSection from "@/components/Email";
 import ResumeSection from "@/components/Resume";
+import { useResumeStore } from "@/app/store/resumestore";
+import { useAuthStore } from "@/app/store/authstore";
+
 
 
 type ActiveComponent = "home" | "email" | "resume"
@@ -29,12 +32,14 @@ import { InteractiveGridPattern } from "@/components/ui/interactive-grid-pattern
 
 export default function DashboardPage() {
   const router = useRouter()
-  const [loading, setLoading] = useState(false)
+  
   const Apiurl = process.env.NEXT_PUBLIC_API_URL
   const [accessToken, setAccessToken] = useState<string | null>(null);
   const [activeComponent, setActiveComponent] = useState<ActiveComponent>('home');
-  const [resumeUrl, setResumeUrl] = useState<string | null>(null)
-  const [resumeLoading, setResumeLoading] = useState<boolean>(false)
+ 
+
+  const { resumeUrl, loading, fetchResumeUrl ,setResumeUrl} = useResumeStore()
+  const {authenticated,setAuthenticated} = useAuthStore()
 
   /*useEffect(()=>{
     const fetchResume = async()=>{
@@ -75,6 +80,15 @@ export default function DashboardPage() {
       router.push("/signin")
     }
   }, [])
+
+  useEffect(()=>{
+    fetchResumeUrl()
+    
+  },[fetchResumeUrl])
+
+  useEffect(()=>{
+    setAuthenticated()
+  },[setAuthenticated])
 
 
 
