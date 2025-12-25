@@ -48,6 +48,9 @@ export const isAuthenticated = (): boolean => {
 export const clearAuthToken = (): void => {
   if (typeof window === 'undefined') return;
   localStorage.removeItem(token_KEY);
+  localStorage.removeItem("email_subject")
+  localStorage.removeItem("email_body")
+  localStorage.removeItem("company_name")
 };
 
 export const logout = (): void => {

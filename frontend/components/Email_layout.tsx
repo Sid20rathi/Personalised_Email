@@ -3,6 +3,7 @@ import { IconCopy,IconX} from "@tabler/icons-react";
 import { toast, Toaster } from "react-hot-toast"; 
 import axios from "axios";
 import { useAuthStore } from "@/app/store/authstore";
+
 type emailgenerated ="yes"
 type inputdata = {
     subject:string|null,
@@ -15,24 +16,11 @@ export default function Email_layout({subject,body,setclose,company}:inputdata )
     const [editableSubject, setEditableSubject] = useState(subject ?? "");
     const [editableBody, setEditableBody] = useState(body ?? "");
     const [accessToken, setAccessToken] = useState('');
-    const [isAuthenticated, setIsAuthenticated] = useState(false);
+    const isAuthenticated = useAuthStore((state) => state.authenticated);
     const apiurl = process.env.NEXT_PUBLIC_API_URL
     const token = useAuthStore((state) => state.token);
 
-    useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-    const authStatus = params.get('auth');
-    const token = params.get('access_token');
     
-    if (authStatus === 'success' && token) {
-      setAccessToken(token);
-      setIsAuthenticated(true);
-      
-      
-      
-      window.history.replaceState({}, '', '/')
-    }
-    }, []);
 
 
 

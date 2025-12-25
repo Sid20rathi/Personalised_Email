@@ -5,7 +5,7 @@ from pathlib import Path
 project_root = Path(__file__).parent.parent
 sys.path.insert(0, str(project_root))
 from fastapi import APIRouter , HTTPException , status ,Depends ,Request
-from fastapi.responses import RedirectResponse
+from fastapi.responses import RedirectResponse ,JSONResponse
 from pydantic import BaseModel , HttpUrl
 from functions.user_data_from_db import store_db
 
@@ -89,11 +89,33 @@ async def google_callback(request:Request,code:str):
                 )
 
             token_data = token_response.json()
-           #await store_db(user_payload["id"],token_data)
-            print(token_data)
+
+            user_info_response = await client.get(
+                "https://www.googleapis.com/oauth2/v2/userinfo",
+                headers={"Authorization": f"Bearer {token_data['access_token']}"}
+            )
+
+
+            user_email = user_info_response.json()["email"]
+            
+
+
+
+
+            db_response = await store_db(user_email,token_data)
+
+            if db_response["status"] == 404:
+                return JSONResponse(
+                    status_code=db_response["status"],
+                    content={"error": db_response["message"],"message":"Please verify with the signed up email."},
+                    
+                )
+            
+
+
 
             return RedirectResponse(
-                url=f"http://localhost:3000/dashboard?auth=success&access_token={token_data['access_token']}"
+                url=f"http://localhost:3000/dashboard?auth=success"
             )
 
 

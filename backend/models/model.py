@@ -7,6 +7,7 @@ sys.path.insert(0, str(project_root))
 
 from sqlmodel import Field, SQLModel, Column
 from typing import Optional
+from datetime import datetime, timedelta
 from sqlalchemy.dialects.postgresql import JSONB
 
 
@@ -18,6 +19,8 @@ class Users(SQLModel, table=True):
     resume_url : Optional[str] = Field(default=None)
     access_token: Optional[str] = Field(default=None)
     refresh_token: Optional[str] = Field(default=None)
+    expires_at: datetime = Field(nullable=True, default=None)
+
 
 
 class ResumeInfo(SQLModel, table=True):
