@@ -147,3 +147,28 @@ async def check_authenticated(request:Request,user_payload:dict = Depends(Authen
             detail=f"Error:{str(e)}"
         )
       
+
+
+@router5.get("/refresh")
+@limiter.limit("5/minute",error_message="Rate limit exceeded. Please wait a minute.")
+async def refresh_token(request:Request,user_payload:dict = Depends(Authenticate_user)):
+    try:
+        with Session(engine) as session:
+            statement = select(Users).where(Users.id == user_payload["id"])
+            result = session.exec(statement).first()
+            if result.access_token:
+                result.access_token = None
+                session.add(result)
+                session.commit()
+                session.refresh(result)
+                return {"authenticated": False}
+            else:
+                return {"authenticated": False}
+        
+      
+    except Exception as e:
+        raise HTTPException(
+            status_code=500,
+            detail=f"Error:{str(e)}"
+        )
+      

@@ -11,11 +11,18 @@ import { InteractiveGridPattern } from "@/components/ui/interactive-grid-pattern
 import TextHighlighter from "@/components/fancy/text/text-highlighter";
 import { SparklesText } from "@/components/ui/sparkles-text";
 import { Highlighter } from "@/components/ui/highlighter";
+import axios from "axios";
 
 export default function LandingPage() {
   const { scrollY } = useScroll();
   const y1 = useTransform(scrollY, [0, 500], [0, 200]);
   const y2 = useTransform(scrollY, [0, 500], [0, -150]);
+
+  const apiurl = process.env.NEXT_PUBLIC_API_URL;
+
+  useEffect(()=>{
+    const response = axios.get(`${apiurl}/active`);
+  },[])
 
   const [scrolled, setScrolled] = useState(false);
 

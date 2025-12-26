@@ -135,7 +135,7 @@ export default function EmailSection() {
   if (loading) {
     return <div className='text-center text-4xl font-serif mt-80 flex justify-center items-center flex-col pointer-events-auto'>
       <div className="flex flex-row"><span className='ml-5 pt-4 pr-4'>Generating your Email</span>  <LoaderOne /></div>
-      <p className="text-sm text-neutral-500">(Please wait while we generate your email. This usually takes a few seconds.)</p>
+      <p className="text-sm text-neutral-500">(Please wait while we generate your email.Till that you can collect email id of recipient.)</p>
 
 
     </div>
@@ -146,11 +146,11 @@ export default function EmailSection() {
   return (
     <div className="w-full h-screen flex justify-center items-center flex-col pb-32">
       <div className=" flex justify-center items-center flex-col pointer-events-auto">
-        <h2 className="text-4xl text-center text-black font-bold ">{email === 'no' ? " Generate Personalized Email " : "Email Generated"}</h2>
+        <h2 className=" mt-6 text-4xl text-center text-black font-bold ">{email === 'no' ? " Generate Personalized Email " : "Email Generated"}</h2>
         <p className="text-sm text-neutral-500">{email === 'no' ? "(Provide the url of the job positing for which you want to generate an email...)" : " "}</p>
       </div>
       <Toaster position="top-right" />
-      {email === 'no' ? <div className="mt-7 w-full pointer-events-auto">
+      {email === 'yes' ? <div className=" w-full pointer-events-auto">
         <PlaceholdersAndVanishInput
           placeholders={placeholders}
           onChange={handleInputChange}
@@ -162,7 +162,7 @@ export default function EmailSection() {
 
 
         <div className="bg-white w-lvh h-full border-2 rounded-md mt-10 shadow-md pointer-events-auto">
-          <Email_layout subject={subject} body={body} setclose={close} company={companyName} /> </div>}
+          <Email_layout subject={subject} body={body} setclose={close} company={companyName}  /> </div>}
           
     </div>
 

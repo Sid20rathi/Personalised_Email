@@ -40,9 +40,9 @@ app.include_router(router5,prefix='/auth',tags=["OAuth2"])
 
 
 
-@app.get("/")
+@app.get("/active")
 def  health_check(request: Request):
-    return{"message":"Email generation agent is live"}
+    return{"message":"Email generation agent is active"}
 
    
 
