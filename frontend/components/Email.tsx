@@ -150,7 +150,7 @@ export default function EmailSection() {
         <p className="text-sm text-neutral-500">{email === 'no' ? "(Provide the url of the job positing for which you want to generate an email...)" : " "}</p>
       </div>
       <Toaster position="top-right" />
-      {email === 'yes' ? <div className=" w-full pointer-events-auto">
+      {email === 'no' ? <div className=" w-full pointer-events-auto">
         <PlaceholdersAndVanishInput
           placeholders={placeholders}
           onChange={handleInputChange}
