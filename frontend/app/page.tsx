@@ -211,8 +211,15 @@ export default function LandingPage() {
       <footer className="py-12 px-6 bg-neutral-950 text-neutral-400 border-t border-neutral-900">
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-center items-center gap-8">
           
-          <div className="text-xs text-neutral-600 flex items-center items-center">
-            © {new Date().getFullYear()} ResuMail Inc. All rights reserved.
+          <div className="text-xs text-neutral-600 flex items-center items-center flex-col">
+            <div>
+              © {new Date().getFullYear()} ResuMail Inc. All rights reserved.
+            </div>
+            <div>
+              <Link href="/policy" className="text-neutral-600  hover:text-blue-400 transition-colors duration-300 py-5">
+                Privacy Policy
+              </Link>
+            </div>
           </div>
         </div>
       </footer>
