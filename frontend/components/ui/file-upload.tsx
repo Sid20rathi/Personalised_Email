@@ -3,6 +3,7 @@ import React, { useRef, useState } from "react";
 import { motion } from "motion/react";
 import { IconUpload } from "@tabler/icons-react";
 import { useDropzone } from "react-dropzone";
+import { toast, Toaster } from "react-hot-toast";
 
 const mainVariant = {
   initial: {
@@ -47,7 +48,7 @@ export const FileUpload = ({
     noClick: true,
     onDrop: handleFileChange,
     onDropRejected: (error) => {
-      console.log(error);
+      toast.error("Error uploading file")
     },
   });
 

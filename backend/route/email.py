@@ -162,7 +162,7 @@ async def send_email(request: Request, user_payload: dict = Depends(Authenticate
         access_token, error = await get_valid_token(user_email)
 
         if error:
-            print(f"Error fetching token: {error}")
+            
             return JSONResponse(
                 status_code=401,
                 content={"error": error, "requires_auth": True}
@@ -209,7 +209,10 @@ async def send_email(request: Request, user_payload: dict = Depends(Authenticate
                 message.attach(attachment)
                 
             except Exception as e:
-                print(f"⚠️ Failed to attach file: {e}")
+                raise HTTPException(
+                    status_code=422,
+                    detail=f"Error downloading attachment"
+                )
                 # Continue without attachment - email still has HTML content
                 
         else:
@@ -258,7 +261,7 @@ async def send_email(request: Request, user_payload: dict = Depends(Authenticate
             }
 
     except Exception as e:
-        print(f"Error in send_email: {e}")
+       
         raise HTTPException(
             status_code=500,
             detail=f"Error: {str(e)}"

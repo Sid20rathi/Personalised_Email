@@ -82,7 +82,11 @@ def generate_email(state:Graph_state):
         "email_body": result.email_body}
         
     except Exception as e:
-        print("Error:",e)
+        
+        return {
+        **state,
+        "email_subject": "",
+        "email_body": ""}
 
 
 if __name__ =="__main__":

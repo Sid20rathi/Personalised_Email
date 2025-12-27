@@ -33,7 +33,7 @@ def adding_resume(full_name: str, experience: str, projects: list, skills: list,
         db.add(resume)
         db.commit()
         db.refresh(resume)
-        print("✅ Resume added successfully:", resume)
+        print("✅ Resume added successfully:")
         return resume
     
 

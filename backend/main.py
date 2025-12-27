@@ -1,3 +1,4 @@
+from doctest import debug
 from fastapi  import FastAPI ,Depends ,Request
 from fastapi.middleware.cors import CORSMiddleware
 import os
@@ -16,7 +17,7 @@ import uvicorn
 
 
 
-app = FastAPI()
+app = FastAPI(debug= False)
 
 app.state.limiter = limiter
 

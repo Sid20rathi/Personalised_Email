@@ -76,7 +76,7 @@ async def store_db(email:str, token_data:dict):
             raise Exception("User not found")
 
 async def get_valid_token(email:str):
-    print("entered get_valid_token function")
+   
     with Session(engine) as session:
         statement = select(Users).where(Users.email == email)
         user = session.exec(statement).first()
@@ -90,22 +90,22 @@ async def get_valid_token(email:str):
         # Check if token is expired or will expire soon (5 minutes buffer)
         current_time = datetime.utcnow()
         if user.expires_at and (user.expires_at - timedelta(minutes=5)) < current_time:
-            print(f"Token needs refresh. Expires at: {user.expires_at}, Current: {current_time}")
+            
             
             try:
                 new_tokens = await refresh_access_token(user.refresh_token)
                 if new_tokens:
-                    print(f"New tokens received: {new_tokens.keys()}")
+                   
                     updated_user = await store_db(email, new_tokens)
                     return updated_user.access_token, None
                 else:
                     return None, "Failed to refresh token. Please re-authenticate."
             except Exception as e:
-                print(f"Token refresh error: {str(e)}")
+               
                 return None, f"Token refresh failed: {str(e)}"
         else:
             # Token is still valid
-            print(f"Token is valid. Expires at: {user.expires_at}")
+           
             return user.access_token, None
 
 async def refresh_access_token(refresh_token: str):
@@ -114,7 +114,7 @@ async def refresh_access_token(refresh_token: str):
         if not refresh_token:
             raise Exception("Refresh token is empty")
             
-        print(f"Refreshing token with refresh_token length: {len(refresh_token) if refresh_token else 0}")
+        
         client_id = os.getenv("GOOGLE_CLIENT_ID")
         client_secret = os.getenv("GOOGLE_CLIENT_SECRET")
     
@@ -128,7 +128,7 @@ async def refresh_access_token(refresh_token: str):
                     "grant_type": "refresh_token"
                 }
             )
-        print(f"response {response.status_code} ''''''''{response.json()}")
+        
         
         if response.status_code == 200:
             data = response.json()
@@ -136,11 +136,11 @@ async def refresh_access_token(refresh_token: str):
             # unless you include 'access_type=offline' and 'prompt=consent' in initial auth
             return data
         else:
-            print(f"Token refresh failed: {response.status_code} - {response.text}")
+            
             return None
     
     except Exception as e:
-        print(f"Error refreshing token: {str(e)}")
+       
         return None
 
 if __name__ =="__main__":

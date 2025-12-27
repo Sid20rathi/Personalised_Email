@@ -24,7 +24,7 @@ pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 def hash_password(password:str):
     hashed_password = pwd_context.hash(password)
-    print("hass_pass:",hashed_password)
+    
     return hashed_password
 
 
@@ -49,9 +49,9 @@ def verify_token(token:str):
 
 if __name__ == "__main__":
     hashed_password = hash_password("Siddhant@20")
-    print(verify_password("Siddhant@20", hashed_password))
+   
     access_token = create_access_token({"sub": "Siddhant@20"})
-    print(access_token)
+ 
     # Decode the token
 
 

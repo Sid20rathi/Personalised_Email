@@ -107,7 +107,8 @@ export default function ResumeSection() {
 
     }
     catch (error) {
-      console.log(error)
+     
+      toast.error("Error uploading resume")
     }
     finally {
       setLoading(false)

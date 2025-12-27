@@ -97,7 +97,7 @@ async def extract_resume(file: UploadFile):
             full_text = "\n\n".join(doc.page_content for doc in documents)
 
             if not full_text:
-                print(f"Error: Could not read text from {file.filename}")
+               
                 return None
 
            
@@ -123,16 +123,12 @@ async def extract_resume(file: UploadFile):
             
             parsed_data: ResumeProfile = structured_extractor.invoke({"resume_text": full_text})
             
-            print("\n--- Structured Resume Data Extracted ---",flush=True)
-            print(f"Name: {parsed_data.full_name}",flush=True)
-            print(f"Experience: {parsed_data.total_experience_summary}",flush=True)
-            print(f"Skills: {parsed_data.core_skills}...",flush=True)
-            print(f"Projects: {parsed_data.projects}...",flush=True)
+   
             
             return parsed_data
             
         except Exception as e:
-            print(f"An error occurred during LLM processing: {e}")
+           
             return None
             
         finally:
@@ -161,7 +157,7 @@ def adding_resume(full_name: str, experience: str, projects: list, skills: list,
                 db.add(resume)
                 db.commit()
                 db.refresh(resume)
-                print("Resume updated successfully:", resume)
+                
                 return resume
             else:
                 resume = ResumeInfo(
@@ -174,7 +170,7 @@ def adding_resume(full_name: str, experience: str, projects: list, skills: list,
                 db.add(resume)
                 db.commit()
                 db.refresh(resume)
-                print("Resume added successfully:", resume)
+                
                 return resume
     except Exception as e:
         raise HTTPException(
@@ -195,7 +191,7 @@ def update_resume_url(resume_url:str, email:str):
                 db.add(resume)
                 db.commit()
                 db.refresh(resume)
-                print("Resume URL updated successfully:", resume)
+             
                 return resume
             else:
                 raise HTTPException(
@@ -257,7 +253,7 @@ async def upload_resume(request: Request,file: UploadFile = File(...),user_paylo
         file.file = BytesIO(file_content)
         
         resume_data  = await extract_resume(file)
-        print("-------Resume Data Extracted-------",flush=True)
+     
 
         output =  adding_resume(
             full_name=resume_data.full_name,
@@ -267,13 +263,12 @@ async def upload_resume(request: Request,file: UploadFile = File(...),user_paylo
             user_id=user_payload.get("id")
         )
 
-        print("-------Resume Data Added-------",flush=True)
 
         resume_output = update_resume_url(
             resume_url=blob_url,
             email=user_payload.get("sub")
         )
-        print("-------Resume URL Updated-------",flush=True)
+        
 
         
         
