@@ -215,7 +215,7 @@ export default function Email_layout({ subject, body, setclose, company, }: inpu
           </div>
           <div className="flex flex-wrap items-center gap-2 flex-1">
             {toEmails.map((email, index) => (
-              <div key={index} className="flex items-center gap-1 bg-gray-100 px-3 py-1 rounded-full text-sm group hover:bg-gray-200 transition-colors">
+              <div key={index} className="flex items-center gap-1 bg-blue-100 px-3 py-1 rounded-full text-sm group hover:bg-gray-200 transition-colors">
                 <span>{email}</span>
                 <IconX
                   className="w-3 h-3 cursor-pointer text-gray-400 group-hover:text-gray-600"

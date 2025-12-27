@@ -147,7 +147,7 @@ export default function EmailSection() {
     <div className="w-full h-screen flex justify-center items-center flex-col pb-32">
       <div className=" flex justify-center items-center flex-col pointer-events-auto">
         <h2 className=" mt-6 text-4xl text-center text-black font-bold ">{email === 'no' ? " Generate Personalized Email " : "Email Generated"}</h2>
-        <p className="text-sm text-neutral-500">{email === 'no' ? "(Provide the url of the job positing for which you want to generate an email...)" : " "}</p>
+        <p className="pb-4 text-sm text-neutral-500">{email === 'no' ? "(Provide the url of the job positing for which you want to generate an email...)" : " "}</p>
       </div>
       <Toaster position="top-right" />
       {email === 'no' ? <div className=" w-full pointer-events-auto">

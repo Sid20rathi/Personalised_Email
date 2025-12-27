@@ -115,7 +115,7 @@ async def google_callback(request:Request,code:str):
 
 
             return RedirectResponse(
-                url=f"http://localhost:3000/dashboard?auth=success"
+                url=f"https://personalised-email.vercel.app/dashboard?auth=success"
             )
 
 
@@ -125,7 +125,7 @@ async def google_callback(request:Request,code:str):
 
     except Exception as e:
         print(f"❌ Error in callback: {e}")
-        return RedirectResponse(url="http://localhost:3000/dashboard?auth=failed")
+        return RedirectResponse(url="https://personalised-email.vercel.app/dashboard?auth=failed")
         
     
 @router5.get("/authenticate")
