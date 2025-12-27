@@ -8,9 +8,9 @@ export default function PrivacyPolicy() {
         <div className="min-h-screen bg-white text-black dark:bg-black dark:text-white font-sans selection:bg-blue-100">
             {/* Header */}
             <nav className="fixed top-0 left-0 right-0 z-50 bg-white/80 dark:bg-black/80 backdrop-blur-md border-b border-neutral-200 dark:border-neutral-800 px-6 py-4 flex justify-between items-center">
-                <Link href="/" className="flex items-center gap-2 hover:opacity-80 transition-opacity">
+                <Link href="/" className="flex items-center  hover:opacity-80 transition-opacity">
                     <div className="rounded-lg flex items-center justify-center text-blue-600 text-2xl font-bold">R</div>
-                    <span className="text-xl font-bold tracking-tight">ResuMail</span>
+                    <span className="text-xl font-bold tracking-tight">esuMail</span>
                 </Link>
                 <Link href="/" className="text-sm font-medium text-neutral-600 dark:text-neutral-400 hover:text-black dark:hover:text-white transition-colors">
                     Back to Home
