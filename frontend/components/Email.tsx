@@ -117,7 +117,7 @@ export default function EmailSection() {
       localStorage.setItem("email_subject", response.data.email_subject)
       localStorage.setItem("email_body", response.data.email_body)
       localStorage.setItem("company_name", response.data.company_name)
-      toast.success("Email generated successfully")
+      toast.success("Email generated successfully",{duration: 4000})
 
       reset()
 
@@ -149,7 +149,7 @@ export default function EmailSection() {
         <h2 className=" mt-6 text-4xl text-center text-black font-bold ">{email === 'no' ? " Generate Personalized Email " : "Email Generated"}</h2>
         <p className="pb-4 text-sm text-neutral-500">{email === 'no' ? "(Provide the url of the job positing for which you want to generate an email...)" : " "}</p>
       </div>
-      <Toaster position="top-right" />
+      <Toaster position="top-right" toastOptions={{duration: 4000}}/>
       {email === 'no' ? <div className=" w-full pointer-events-auto">
         <PlaceholdersAndVanishInput
           placeholders={placeholders}

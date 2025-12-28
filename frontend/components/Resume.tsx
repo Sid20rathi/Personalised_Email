@@ -139,7 +139,7 @@ export default function ResumeSection() {
     <div className="p-4 pb-20 mb-96 h-full z-50 pointer-events-auto" >
       <h2 className="text-4xl font-bold  flex items-center justify-center ">Your Resume</h2>
       <p className='text-center text-sm text-gray-500 mb-2'> (upload the resume for which you want to generate personalized email.)</p>
-      <Toaster position="top-right" />
+      <Toaster position="top-right" toastOptions={{duration: 4000}}/>
 
       {!resumeUrl ? <div className="w-full max-w-4x    bg-transparent dark:bg-black border-neutral-200 dark:border-neutral-800 rounded-lg mt-28">
         <FileUpload onChange={handleFileUpload} />

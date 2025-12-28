@@ -65,7 +65,7 @@ export default function Signin() {
           "Content-Type": "application/json",
         },
       })
-      toast.success("Signed In successfully!");
+      toast.success("Signed In successfully!",{duration: 4000});
 
       if (response.data.access_token) {
         setAuth(response.data.access_token)
@@ -83,7 +83,7 @@ export default function Signin() {
         message = message.split(":").pop()?.trim();
       }
 
-      toast.error(message || "Signin failed. Please try again.");
+      toast.error(message || "Signin failed. Please try again.",{duration: 4000});
 
 
     }
@@ -126,7 +126,7 @@ export default function Signin() {
           <div className="text-2xl font-semibold text-black mb-10  pl-28">
             Login to <button className="text-blue-500 font-bold cursor-pointer hover:underline pl-1" onClick={()=>router.push("/")}>ResuMail</button>
           </div>
-          <Toaster position="top-right" />
+          <Toaster position="top-right" toastOptions={{duration: 4000}}/>
 
           <form onSubmit={handleSubmit(Submit)}>
             <div>

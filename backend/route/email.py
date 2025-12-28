@@ -31,31 +31,29 @@ class content_url(BaseModel):
 router1 = APIRouter()
 
 def convert_to_html(plain_text: str) -> str:
-    """Convert plain text to HTML with proper formatting"""
-    # Split the text into lines
+    """Convert plain text to HTML with larger text and tighter spacing"""
+    # Split the text into lines and take only the first 2 lines
     lines = plain_text.split('\n')
-    html_lines = []
     
+    
+    html_lines = []
     for line in lines:
-        line = line.strip()
-        if not line:
-            html_lines.append('<p>&nbsp;</p>')
-        elif line.startswith('# '):  # Heading
+        if line.startswith('# '):
             html_lines.append(f'<h2>{line[2:]}</h2>')
-        elif line.startswith('---'):  # Separator
+        elif line.startswith('---'):
             html_lines.append('<hr>')
-        elif line.startswith('**') and line.endswith('**'):  # Bold
+        elif line.startswith('**') and line.endswith('**'):
             html_lines.append(f'<p><strong>{line[2:-2]}</strong></p>')
-        elif line.startswith('- '):  # List item
+        elif line.startswith('- '):
             html_lines.append(f'<li>{line[2:]}</li>')
         else:
             html_lines.append(f'<p>{line}</p>')
     
-    # Wrap list items in ul tags if we found any
     html = ''.join(html_lines)
-    if '<li>' in html:
-        html = html.replace('<li>', '<ul><li>').replace('</li>', '</li></ul>')
-    
+    # Basic wrap for list items
+    if '<li>' in html and '<ul>' not in html:
+        html = f"<ul>{html}</ul>".replace('</li><li>', '</li><li>')
+
     return f"""
     <!DOCTYPE html>
     <html>
@@ -64,44 +62,28 @@ def convert_to_html(plain_text: str) -> str:
         <style>
             body {{
                 font-family: Arial, sans-serif;
-                line-height: 1.6;
+                line-height: 1.4; /* Tighter line height */
                 color: #333;
                 max-width: 600px;
                 margin: 0 auto;
-                padding: 20px;
+                padding: 10px; /* Reduced outer padding */
+                font-size: 20px; /* Increased font size */
             }}
             h2 {{
-                color: #1a73e8;
-                border-bottom: 2px solid #eee;
-                padding-bottom: 10px;
+                font-size: 22px;
+                margin-bottom: 8px;
             }}
             p {{
-                margin-bottom: 15px;
+                margin-bottom: 10px; /* Reduced spacing between paragraphs */
+                margin-top: 0;
             }}
             ul {{
-                margin-left: 20px;
-                margin-bottom: 15px;
-            }}
-            li {{
                 margin-bottom: 5px;
-            }}
-            hr {{
-                border: none;
-                border-top: 1px solid #eee;
-                margin: 20px 0;
-            }}
-            .signature {{
-                margin-top: 30px;
-                padding-top: 20px;
-                border-top: 1px solid #eee;
-                font-style: italic;
-                color: #666;
             }}
         </style>
     </head>
     <body>
         {html}
-        
     </body>
     </html>
     """

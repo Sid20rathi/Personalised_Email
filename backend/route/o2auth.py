@@ -116,6 +116,8 @@ async def google_callback(request:Request,code:str):
 
             return RedirectResponse(
                 url=f"https://www.resumail.online/dashboard?auth=success"
+                
+
             )
 
 

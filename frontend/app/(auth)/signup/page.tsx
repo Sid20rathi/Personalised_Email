@@ -69,7 +69,7 @@ export default function Signup() {
         }
       )
 
-      toast.success("Account created successfully!");
+      toast.success("Account created successfully!",{duration: 4000});
 
       if (response.data.access_token) {
         setAuth(response.data.access_token)
@@ -88,7 +88,7 @@ export default function Signup() {
         message = message.split(":").pop()?.trim();
       }
 
-      toast.error(message || "Signup failed. Please try again.");
+      toast.error(message || "Signup failed. Please try again.",{duration: 4000});
 
     } finally {
       setIsLoading(false)
@@ -136,7 +136,7 @@ export default function Signup() {
             <h2 className="text-xl font-bold text-neutral-800 dark:text-neutral-200">
               Welcome to  <button className="text-blue-500 font-bold cursor-pointer hover:underline pl-1" onClick={()=>router.push("/")}>ResuMail</button>
             </h2>
-            <Toaster position="top-right" />
+           <Toaster position="top-right" toastOptions={{duration: 4000}}/>
 
 
             <form className="my-8" onSubmit={handleSubmit(onSubmit)}>
