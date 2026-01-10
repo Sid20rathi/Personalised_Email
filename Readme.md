@@ -3,7 +3,7 @@
 A full‑stack project that helps you compose personalized emails from your resume. The repository contains both `frontend` and `backend` parts.
 
 ## Live Demo
-- **URL**: https://personalised-email.vercel.app/
+- **URL**: https://www.resumail.online/
 
 
 
