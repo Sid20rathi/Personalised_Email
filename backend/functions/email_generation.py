@@ -75,6 +75,8 @@ def generate_email(state:Graph_state):
         "Query": f"Generate an email for the job posting with the context provided to you. the email subject should be short and to the point. the body should be under 200-250 words and the email should be like a human has written the email."
         })
 
+        print("result is",result)
+
     
         return {
         **state,
@@ -82,6 +84,7 @@ def generate_email(state:Graph_state):
         "email_body": result.email_body}
         
     except Exception as e:
+        print("error is",e)
         
         return {
         **state,
