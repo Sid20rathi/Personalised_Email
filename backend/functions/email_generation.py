@@ -71,7 +71,7 @@ def generate_email(state:Graph_state):
 
 
         chain = extract_prompt | llm.with_structured_output(Email_structure)
-        result = chain.invoke({
+        result = chain.invoke({                         
         "Query": f"Generate an email for the job posting with the context provided to you. the email subject should be short and to the point. the body should be under 200-250 words and the email should be like a human has written the email."
         })
 

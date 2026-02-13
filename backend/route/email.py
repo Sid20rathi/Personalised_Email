@@ -113,6 +113,7 @@ async def email_generation(request: Request,content_url:content_url,user_payload
     try:
                
         state = await graph.ainvoke({'url':str(content_url.joburl),"user_id":user_payload.get("id")})
+        print(state)
 
         return {"email_subject":state["email_subject"],"email_body":state["email_body"],"company_name":state["company_name"]}
          
