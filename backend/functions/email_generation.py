@@ -14,8 +14,8 @@ from sqlmodel import Session, select
 from pydantic import BaseModel
 from langchain.prompts import ChatPromptTemplate
 
-# --- CHANGED: Import Vertex AI instead of standard GenAI ---
-from langchain_google_vertexai import ChatVertexAI
+
+
 
 load_dotenv()
 
@@ -23,11 +23,15 @@ class Email_structure(BaseModel):
     email_subject: str
     email_body: str
 
-
-llm = ChatVertexAI(
-    model_name="gemini-2.5-flash",
+from langchain_groq import ChatGroq
+llm = ChatGroq(
+    model="qwen/qwen3-32b",
     temperature=0,
-    convert_system_message_to_human=True 
+    max_tokens=None,
+    reasoning_format="parsed",
+    timeout=None,
+    max_retries=2,
+    # other params...
 )
 
 def generate_email(state: Graph_state):

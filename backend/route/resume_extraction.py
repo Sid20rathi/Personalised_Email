@@ -14,6 +14,7 @@ import tempfile
 import requests
 import uuid
 import httpx
+from langchain_groq import ChatGroq
 
 project_root = Path(__file__).parent.parent
 sys.path.insert(0, str(project_root))
@@ -100,11 +101,15 @@ async def extract_resume(file: UploadFile):
                
                 return None
 
-           
-            llm = init_chat_model(
-                "google_genai:gemini-2.5-flash", 
-                api_key=API_KEY
-            )
+            llm = ChatGroq(
+            model="qwen/qwen3-32b",
+            temperature=0,
+            max_tokens=None,
+            reasoning_format="parsed",
+            timeout=None,
+            max_retries=2,
+            # other params...
+        )
 
             system_prompt = (
                 "You are an expert resume parser. Your task is to accurately extract "

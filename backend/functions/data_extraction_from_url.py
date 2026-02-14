@@ -18,6 +18,7 @@ from langchain_google_genai import ChatGoogleGenerativeAI
 from playwright.sync_api import sync_playwright 
 import asyncio
 from concurrent.futures import ThreadPoolExecutor
+from langchain_groq import ChatGroq
 
 
 
@@ -67,10 +68,15 @@ async def scrape_page_content(url: str) -> str:
 def summarize_with_gemini(page_text: str) -> str:
     """Use Gemini to extract job descriptions + company info"""
 
-    llm = ChatGoogleGenerativeAI(
-        model="gemini-2.5-flash",
+    
+    llm = ChatGroq(
+        model="qwen/qwen3-32b",
         temperature=0,
-        google_api_key=os.getenv("GOOGLE_API_KEY"),
+        max_tokens=None,
+        reasoning_format="parsed",
+        timeout=None,
+        max_retries=2,
+        # other params...
     )
 
   
