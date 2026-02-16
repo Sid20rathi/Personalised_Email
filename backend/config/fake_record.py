@@ -17,7 +17,7 @@ def adding_user(name:str,email:str,password:str):
         session.add(user)
         session.commit()
         session.refresh(user)
-        print("user added successfully")
+        
         return user
 
 def adding_resume(full_name: str, experience: str, projects: list, skills: list,user_id:int):
@@ -33,7 +33,7 @@ def adding_resume(full_name: str, experience: str, projects: list, skills: list,
         db.add(resume)
         db.commit()
         db.refresh(resume)
-        print("✅ Resume added successfully:")
+      
         return resume
     
 

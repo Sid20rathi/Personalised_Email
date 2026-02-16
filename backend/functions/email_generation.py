@@ -72,7 +72,7 @@ def generate_email(state: Graph_state):
             "Query": "Generate an email for the job posting with the context provided to you. The email subject should be short and to the point. The body should be under 200-250 words and the email should be like a human has written the email."
         })
 
-        print("result is", result)
+        
 
         return {
             **state,
@@ -81,8 +81,8 @@ def generate_email(state: Graph_state):
         }
         
     except Exception as e:
-        print("Error generating email:", e)
-        # It's good practice to print the full traceback for debugging on Render logs
+       
+     
         import traceback
         traceback.print_exc() 
         

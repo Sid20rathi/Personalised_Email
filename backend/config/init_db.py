@@ -12,7 +12,7 @@ from sqlmodel import SQLModel
 def create_tables():
     '''This function creates the tables in the database.'''
     SQLModel.metadata.create_all(engine)
-    print(" Tables created successfully!")
+    
 
 if __name__ =='__main__':
     create_tables()
