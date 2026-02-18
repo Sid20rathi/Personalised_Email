@@ -76,26 +76,34 @@ export default function PrivacyPolicy() {
                         <ul className="list-disc pl-6 space-y-2 text-blue-900 dark:text-blue-100">
                             <li>We do not use Google Workspace data for training generalized AI models.</li>
                             <li>We do not share, sell, or transfer Google user data to third parties for advertising purposes.</li>
-                            <li>We only transfer data to third parties if necessary to provide or improve our user-facing features, to comply with applicable law, or as part of a merger, acquisition, or sale of assets.</li>
+                            
+                        </ul>
+                    </div>
+
+                    <div className="p-6 rounded-2xl bg-blue-50 dark:bg-blue-900/10 border border-blue-100 dark:border-blue-900/30">
+                        <h2 className="text-2xl font-bold mb-4 text-blue-800 dark:text-blue-300">5. Google User Data Retention and Deletion</h2>
+                         <ul className="list-disc pl-6 space-y-2 text-blue-900 dark:text-blue-100">
+                             <li><strong>Retention:</strong> We retain your Google user data only for as long as necessary to provide our services. If you delete your account, your data is removed from our systems within 30 days.</li>
+                             <li><strong>Deletion:</strong> You can request deletion of your Google user data at any time by contacting us at <span className="font-semibold">sid20rathi@gmail.com</span>. We will process your request and confirm deletion within 30 days.</li>
                         </ul>
                     </div>
 
                     <section>
-                        <h2 className="text-2xl font-bold mb-4">5. Data Security</h2>
+                        <h2 className="text-2xl font-bold mb-4">6. Data Security</h2>
                         <p className="text-neutral-700 dark:text-neutral-300 leading-relaxed">
                             We implement industry-standard security measures to protect your data. Your data is encrypted in transit using SSL/TLS protocols and stored securely. We regularly review our information collection, storage, and processing practices to prevent unauthorized access.
                         </p>
                     </section>
 
                     <section>
-                        <h2 className="text-2xl font-bold mb-4">6. Sharing Your Information</h2>
+                        <h2 className="text-2xl font-bold mb-4">7. Sharing Your Information</h2>
                         <p className="text-neutral-700 dark:text-neutral-300 leading-relaxed">
                             We do not sell your personal data. We may share your information with trusted third-party service providers (such as cloud hosting providers) only as necessary to operate our service. These providers are bound by strict confidentiality obligations.
                         </p>
                     </section>
 
                     <section>
-                        <h2 className="text-2xl font-bold mb-4">7. Contact Us</h2>
+                        <h2 className="text-2xl font-bold mb-4">8. Contact Us</h2>
                         <p className="text-neutral-700 dark:text-neutral-300 leading-relaxed">
                             If you have any questions about this Privacy Policy or our data practices, please contact us at:
                         </p>

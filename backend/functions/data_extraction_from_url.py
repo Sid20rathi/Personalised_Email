@@ -96,6 +96,7 @@ async def data_from_url(state: Graph_state):
     try:
         page_text =  await scrape_page_content(state['url'])
         result = summarize_with_gemini(page_text)
+        
        
         return{
             **state,
@@ -106,6 +107,7 @@ async def data_from_url(state: Graph_state):
         
 
     except Exception as e:
+        
         
         return{
             **state,
