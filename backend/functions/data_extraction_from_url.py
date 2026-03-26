@@ -109,6 +109,7 @@ async def data_from_url(state: Graph_state):
     except Exception as e:
         
         
+        
         return{
             **state,
             "job_description": "",

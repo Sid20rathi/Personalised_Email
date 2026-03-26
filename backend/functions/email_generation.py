@@ -81,6 +81,7 @@ def generate_email(state: Graph_state):
         }
         
     except Exception as e:
+    
        
      
         import traceback

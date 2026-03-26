@@ -26,4 +26,15 @@ workflow.add_edge("data_extraction_from_url","user_data_from_db")
 workflow.add_edge("user_data_from_db","email_generation")
 workflow.add_edge("email_generation",END)
 
+
+'''workflow.add_edge(START, "data_extraction_from_url")
+workflow.add_edge(START, "user_data_from_db")
+
+# Fan-in: both must complete before email_generation runs
+workflow.add_edge("data_extraction_from_url", "email_generation")
+workflow.add_edge("user_data_from_db", "email_generation")
+
+workflow.add_edge("email_generation", END)'''
+
+
 graph  = workflow.compile()
